@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<app-runner-module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="apprunner-module.xsd">
+  <configuration>
+    <!-- When constant tag is used as a pure declaration (only name attribute is set and and value is 
+      not specified), AppRunner first tries to find the value in child modules (if any). Then it looks inside 
+      properties files. If it failed to eventually find a value, it fails fast with an error. E.g. one can 
+      specify character_to and character_from in constants section of <module>.xml file or in any properties 
+      file, which he supplies as a command line argument. Constants character_to(from) take values such as 
+      lil, asa, ask, kzm etc. -->
+    <constants>
+      <constant name="quickbms_t7_out_dir"
+        value="K:\soft\games\Tekken_7\modding\Tekken7_ModdingTools\quickbms\Tekken7_OUT" />
+      <constant name="uasset_renamer_dir"
+        value="K:\soft\games\Tekken_7\modding\Tekken7_ModdingTools\uassetrenamer" />
+      <constant name="u4pak_dir"
+        value="K:/soft/games/Tekken_7/modding/Tekken7_ModdingTools/u4pak" />
+      <constant name="t7_~mods_dir"
+        value="K:\SteamLibrary\steamapps\common\TEKKEN 7\TekkenGame\Content\Paks\~mods" />
+      <constant name="mod_name" />
+      <!-- Executable paths -->
+      <constant name="uasset_renamer" value="${uasset_renamer_dir}\uassetrenamer.exe" />
+      <constant name="u4pak" value="${u4pak_dir}/u4pak.exe" />
+      <constant name="mods_unpacked_dir" value="./mods_unpacked" />
+      <constant name="mods_u4paked_dir" value="./mods_packed" />
+    </constants>
+    <actions>
+      <operation name="remove-new-suffix">
+        <rename>
+          <file in="." ends-with="-new.uasset" />
+          <replace-all substring="-new.uasset" with=".uasset" />
+        </rename>
+      </operation>
+    </actions>
+  </configuration>
+
+
+  <tasks>
+    <task name="material_instance">
+      <constants>
+        <constant name="subpath"
+          value="TekkenGame\Content\Character\Common\shader\MaterialInstance\skin" />
+        <constant name="to" value="${quickbms_t7_out_dir}\${subpath}\${character_to}" />
+        <constant name="from" value="${quickbms_t7_out_dir}\${subpath}\${character_from}" />
+      </constants>
+      <actions>
+        <application executable="${uasset_renamer}">
+          <execute>
+            <file in="${to}" ends-with="arm.uasset" />
+            <file in="${from}" ends-with="arm.uasset" />
+          </execute>
+          <execute>
+            <file in="${to}" ends-with="body.uasset" />
+            <file in="${from}" ends-with="body.uasset" />
+          </execute>
+          <execute>
+            <file in="${to}" ends-with="face.uasset" />
+            <file in="${from}" ends-with="face.uasset" />
+          </execute>
+          <execute>
+            <file in="${to}" ends-with="foot.uasset" />
+            <file in="${from}" ends-with="foot.uasset" />
+          </execute>
+          <execute>
+            <file in="${to}" ends-with="hand.uasset" />
+            <file in="${from}" ends-with="hand.uasset" />
+          </execute>
+          <execute>
+            <file in="${to}" ends-with="leg.uasset" />
+            <file in="${from}" ends-with="leg.uasset" />
+          </execute>
+          <execute>
+            <file in="${to}" ends-with="neck.uasset" />
+            <file in="${from}" ends-with="neck.uasset" />
+          </execute>
+        </application>
+        <operation ref="remove-new-suffix" />
+        <operation>
+          <move to="${u4pak_dir}\${mod_name}\${subpath}\${character_to}">
+            <file in="${uasset_renamer_dir}" ends-with=".uasset" />
+          </move>
+        </operation>
+      </actions>
+    </task>
+
+
+    <task name="character_item_lower">
+      <constants>
+        <constant name="subpath" value="TekkenGame\Content\Character\Item\CharacterItem" />
+        <constant name="to" value="${quickbms_t7_out_dir}\${subpath}\${character_to}\LOWER" />
+        <constant name="from"
+          value="${quickbms_t7_out_dir}\${subpath}\${character_from}\LOWER" />
+      </constants>
+      <actions>
+        <application executable="${uasset_renamer}">
+          <execute>
+            <file in="${to}" starts-with="CI_${character_to}_bdl"
+              contains="${ci_costume_lower_to}|${costume_lower_to}" />
+            <file in="${from}" starts-with="CI_${character_from}_bdl"
+              contains="${ci_costume_lower_from}|${costume_lower_from}" />
+          </execute>
+        </application>
+        <operation ref="remove-new-suffix" />
+        <operation>
+          <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}\LOWER">
+            <file in="." ends-with=".uasset" />
+          </move>
+        </operation>
+      </actions>
+    </task>
+
+
+    <task name="character_item_upper">
+      <constants>
+        <constant name="subpath" value="TekkenGame\Content\Character\Item\CharacterItem" />
+        <constant name="to" value="${quickbms_t7_out_dir}\${subpath}\${character_to}\UPPER" />
+        <constant name="from"
+          value="${quickbms_t7_out_dir}\${subpath}\${character_from}\UPPER" />
+      </constants>
+      <actions>
+        <application executable="${uasset_renamer}">
+          <execute>
+            <file in="${to}" starts-with="CI_${character_to}_bdu"
+              contains="${ci_costume_upper_to}|${costume_upper_to}" />
+            <file in="${from}" starts-with="CI_${character_from}_bdu"
+              contains="${ci_costume_upper_from}|${costume_upper_from}" />
+          </execute>
+        </application>
+        <operation ref="remove-new-suffix" />
+        <operation>
+          <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}\UPPER">
+            <file in="." ends-with=".uasset" />
+          </move>
+        </operation>
+      </actions>
+    </task>
+
+
+    <task name="pack_mod">
+      <actions>
+        <application executable="${u4pak}">
+          <execute>
+            <cli-key value="pack" />
+            <cli-value value="${mods_u4paked_dir}/${mod_name}.pak" />
+            <cli-value value="${mods_unpacked_dir}/${mod_name}/TekkenGame" />
+          </execute>
+        </application>
+      </actions>
+    </task>
+
+
+    <task name="move_new_mod_to_~mods">
+      <actions>
+        <operation>
+          <move to="${t7_~mods_dir}">
+            <file in="${mods_u4paked_dir}" ends-with=".pak" />
+          </move>
+        </operation>
+      </actions>
+    </task>
+  </tasks>
+</app-runner-module>

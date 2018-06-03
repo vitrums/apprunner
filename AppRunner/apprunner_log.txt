@@ -1,0 +1,2 @@
+[2018-06-03 03:17:59] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with ".uasset"
+[2018-06-03 03:20:15] SEVERE : Couldn't find any file in ".\mods_unpacked\Lili_As_MasterRaven_1p\TekkenGame\Content\Character\Item\CharacterItem\lil\LOWER" such that starts with "", contains "" and ends with ".txt"

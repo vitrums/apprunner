@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:simpleType name="non_empty_string_type">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="boolean_type">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="true" />
+      <xs:enumeration value="false" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="scope_type">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="compile" />
+      <xs:enumeration value="provided" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- definition of attributes -->
+  <xs:attribute name="name" type="non_empty_string_type" />
+  <xs:attribute name="value" type="non_empty_string_type" />
+
+  <xs:attribute name="starts-with" type="non_empty_string_type" />
+  <xs:attribute name="ends-with" type="non_empty_string_type" />
+  <xs:attribute name="contains" type="non_empty_string_type" />
+
+  <xs:complexType name="constants_type">
+    <xs:annotation>
+      <xs:documentation source="description">
+        Parent element for &lt;constant&gt; elements.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="constant" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation source="description">
+            &lt;constant&gt; is a (name,value) pair. When
+            referenced from within a document, ${CONSTANT_NAME} syntax should be used.
+          </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:attribute ref="name" />
+          <xs:attribute name="value" type="xs:string" use="optional" />
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="namespace" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="file_type">
+    <xs:annotation>
+      <xs:documentation source="description">
+        Denotes a valid file name of a file residing in the
+        directory specified by "in" attribute.
+        Attributes "starts-with", "ends-with" and "contains"
+        specify the file.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:attribute name="in" type="non_empty_string_type" />
+    <xs:attribute ref="starts-with" use="optional" />
+    <xs:attribute ref="ends-with" use="optional" />
+    <xs:attribute ref="contains" use="optional" />
+  </xs:complexType>
+
+  <!-- operation_group types (more types might be added later) -->
+  <xs:complexType name="rename_type">
+    <xs:annotation>
+      <xs:documentation source="description">
+        Directive to rename the given file by applying one
+        or more of the rename options.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="file" type="file_type" />
+      <xs:element name="replace-all" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation source="description">
+            Rename option, which tells the apprunner to
+            replace all occurrences of the string given in "substring" attribute with the string
+            specified in "with" attribute.
+          </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:attribute name="substring" type="non_empty_string_type" />
+          <xs:attribute name="with" type="non_empty_string_type" />
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="move_type">
+    <xs:annotation>
+      <xs:documentation source="description">
+        Directive to move the given file to the directory
+        represented by the "to" attribute.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="file" type="file_type" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="to" type="non_empty_string_type" />
+  </xs:complexType>
+  
+  <xs:group name="operation_group">
+    <xs:annotation>
+      <xs:documentation source="description">
+        Elements comprising one operation.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:choice>
+      <xs:element name="rename" type="rename_type" />
+      <xs:element name="move" type="move_type" />
+      <xs:element name="copy" type="move_type" />
+      <xs:element name="delete">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="file" type="file_type" maxOccurs="unbounded" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:choice>
+  </xs:group>
+
+  <xs:complexType name="operation_def_type">
+    <xs:annotation>
+      <xs:documentation source="description">
+        A definition of an operation.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:group ref="operation_group" minOccurs="0" maxOccurs="unbounded" />
+    <xs:attribute ref="name" />
+  </xs:complexType>
+
+  <xs:complexType name="configuration_type">
+    <xs:annotation>
+      <xs:documentation source="description">
+        Contains definitions of constants and operations.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="constants" type="constants_type" minOccurs="0" />
+      <xs:element name="actions" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="operation" type="operation_def_type" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="actions_type">
+    <xs:annotation>
+      <xs:documentation source="description">
+        Contains a list of actions for one task.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:choice maxOccurs="unbounded">
+      <xs:element name="application">
+        <xs:annotation>
+          <xs:documentation source="description">
+            Represents a call of an external process.
+          </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="execute" maxOccurs="unbounded">
+              <xs:annotation>
+                <xs:documentation source="description">
+                  One call of the enclosing process with the
+                  list of arguments.
+                </xs:documentation>
+              </xs:annotation>
+              <xs:complexType>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element name="cli-key">
+                    <xs:annotation>
+                      <xs:documentation source="description">
+                        Any string, that will be passed as
+                        is to this application as a CLI arg.
+                      </xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                      <xs:attribute name="value" type="non_empty_string_type" />
+                    </xs:complexType>
+                  </xs:element>
+                  <xs:element name="cli-value">
+                    <xs:annotation>
+                      <xs:documentation source="description">
+                        Any string, that will be wrapped in
+                        "" and then passed to this application as a CLI arg.
+                      </xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                      <xs:attribute name="value" type="non_empty_string_type" />
+                    </xs:complexType>
+                  </xs:element>
+                  <xs:element name="file" type="file_type" />
+                </xs:choice>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute name="executable" type="non_empty_string_type" />
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="operation">
+        <xs:annotation>
+          <xs:documentation source="description">
+            Operation consists of a set of actions like
+            move, delete, rename a file, which will be performed in the same order they appear in a
+            document.
+          </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:group ref="operation_group" minOccurs="0" maxOccurs="unbounded" />
+          <xs:attribute name="ref" type="non_empty_string_type" use="optional" />
+        </xs:complexType>
+      </xs:element>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="task_type">
+    <xs:annotation>
+      <xs:documentation source="description">
+        A unit of work, which combines a set of external
+        calls and operations on files.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="constants" type="constants_type" minOccurs="0" />
+      <xs:element name="actions" type="actions_type" />
+    </xs:sequence>
+    <xs:attribute ref="name" />
+  </xs:complexType>
+
+  <!-- Root -->
+  <xs:element name="app-runner-module">
+    <xs:annotation>
+      <xs:documentation source="description">
+        Root element of the document.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:all>
+        <xs:element name="inherits" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation source="description">
+              Contains a list of parent modules to inherit.
+            </xs:documentation>
+          </xs:annotation>
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="module" minOccurs="1" maxOccurs="unbounded">
+                <xs:annotation>
+                  <xs:documentation source="description">
+                    A valid name of a XML file with a parent module.
+                  </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:attribute ref="name" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="configuration" type="configuration_type" minOccurs="0" />
+        <xs:element name="tasks" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="task" type="task_type" minOccurs="0"
+                maxOccurs="unbounded" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

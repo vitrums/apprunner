@@ -114,7 +114,7 @@ A large amount of routine work a modder has to repeat for every new mod served t
 
 *config/examples/tekken7-module.xml's* tasks:
 
-- **cleanup**: removes temporary directory ${mod_name} in ./mods_unpacked
+- **cleanup**: removes temporary directory *${mod_name}* in *./mods_unpacked*
 - **material_instance**: runs *uassetrenamer.exe* against *.uasset* files specified in *common.properties* located in *TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\\${character}*.
 - **character_item_lower**: -||- in *TekkenGame\Content\Character\Item\CharacterItem\\${character}\LOWER*
 - **character_item_upper**: -||- in *TekkenGame\Content\Character\Item\CharacterItem\\${character}\UPPER*
@@ -141,7 +141,7 @@ Constants inside *config/examples/tekken7-module.xml* to tweak:
 The batch file (*make_simple_mod.bat*) running the tool to create a most common mod, which simply replaces specific upper and lower parts of one character with specific upper and lower parts of another character, but doesn't swap material instance will consist of the following line:
 
 ```
-apprunner.exe -m examples\t7_sound_module.xml -p examples\common.properties -t character_item_lower customize_lower replace_images_cus_item_lower character_item_upper customize_upper replace_images_cus_item_upper pack_mod move_new_mod_to_~mods delete_tmp_module_dir_with_uasset_files
+apprunner.exe -m examples\t7_sound_module.xml -p examples\common.properties -t cleanup character_item_lower customize_lower replace_images_cus_item_lower character_item_upper customize_upper replace_images_cus_item_upper pack_mod move_new_mod_to_~mods delete_tmp_module_dir_with_uasset_files copy_properties_to_~mods_and_rename_to_mod_name
 ```
 where *common.properties* is a *common.properties*-like properties file, where user adjusts values of constants for each new mod before running the batch file.
 

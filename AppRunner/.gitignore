@@ -3,6 +3,6 @@
 /.classpath
 /apprunner_log.txt
 /target/
-/mods_packed/
-/mods_unpacked/
+/mods_packed/*
+/mods_unpacked/*
 /destination/*

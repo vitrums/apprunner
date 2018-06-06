@@ -1,6 +1,6 @@
 # AppRunner
 
-This application is designed to facilitate the task of grouping and performing a set of typical operations upon files, such as move, copy, delete and rename. It can also run external processes (hence the name "AppRunner"). You can describe its functionality as a small subset of operations from shell script. The configuration is performed through editing &lt;module&gt;.xml file and &lt;launch-specific&gt;.properties file. One should run AppRunner against a module and at least one task specified (later on about tasks). The main idea is that user doesn't have to be an expert in shell script, batch or any programming language to work with this tool. Instead it has a declarative XML style, which is closer to human language. Therefore it should be relatively easy to adjust the a ready-to-use solution such as the main example *config/examples/tekken7-module.xml (more about it further in this readme)* to add new features following the existing pattern, or even create the new module from scratch to serve a completely different purpose.
+This application is designed to facilitate the task of grouping and performing a set of typical operations upon files, such as move, copy, delete and rename. It can also run external processes (hence the name "AppRunner"). You can describe its functionality as a small subset of operations from shell script. The configuration is performed through editing &lt;module&gt;.xml file and &lt;launch-specific&gt;.properties file. One should run AppRunner against a module and at least one task specified (later on about tasks). The main idea is that user doesn't have to be an expert in shell script, batch or any programming language to work with this tool. Instead it has a declarative XML style, which is closer to human language. Therefore it should be relatively easy to adjust a ready-to-use solution such as the main example *config/examples/tekken7-module.xml (more about it further in this readme)* to add new features following the existing pattern, or even create the new module from scratch to serve a completely different purpose.
 
 ## Getting Started
 
@@ -110,7 +110,7 @@ then mr.Doe becomes a vegan.
 
 ## Tekken 7 modding example
 
-A large amount of routine work a modder has to repeat for every new mod served the main inspiration for writing this application. Hence *config/examples/tekken7-module.xml* along with *lili_as_master_raven.properties* is the main example, demonstrating the advantages of using this tool.
+A large amount of routine work a modder has to repeat for every new mod served the main inspiration for writing this application. Hence *config/examples/tekken7-module.xml* along with *common.properties* is the main example, demonstrating the advantages of using this tool.
 
 *config/examples/tekken7-module.xml's* tasks:
 
@@ -125,7 +125,9 @@ A large amount of routine work a modder has to repeat for every new mod served t
 - **move_new_mod_to_~mods**: moves *${mod_name}.pak* to ~mods folder inside the Tekken 7 game directory
 - **delete_tmp_module_dir_with_uasset_files**: removes a temporary *TekkenGame* folder, created by running the task **pack_mod**
 
-It uses *mods_packed* and *mods_unpacked* directories to store temporary files.
+*Note:
+- There is no such constant as ${character}. It has been written this way here only for the sake of brevity. Constants ${character_to} and ${character_from} are used instead. 
+- Make sure you have directories *mods_packed* and *mods_unpacked* to store temporary files.
 
 Constants inside *config/examples/tekken7-module.xml* to tweak:
 
@@ -139,7 +141,7 @@ The batch file (*make_simple_mod.bat*) running the tool to create a most common 
 ```
 apprunner.exe -m examples\t7_sound_module.xml -p examples\common.properties -t character_item_lower customize_lower replace_images_cus_item_lower character_item_upper customize_upper replace_images_cus_item_upper pack_mod move_new_mod_to_~mods delete_tmp_module_dir_with_uasset_files
 ```
-where *common.properties* is a *lili_as_master_raven.properties*-like properties file, where user adjusts values of constants for each new mod before running the batch file.
+where *common.properties* is a *common.properties*-like properties file, where user adjusts values of constants for each new mod before running the batch file.
 
 *Note: in Unix-like OS you should write ./apprunner.exe instead of apprunner.exe*
 
@@ -147,7 +149,7 @@ where *common.properties* is a *lili_as_master_raven.properties*-like properties
 
 The program requires JRE (Java Runtime Environment) version 1.8 or later to run. However in case of absence of JRE, it will be prompted to be installed.
 
-Note: if you want to get your hands on this project as a dev, there's little if anything specific to know, since it's a Maven project. Make sure the project settings use 1.8 or later Java environment.
+Note: if you want to get your hands on this project as a dev, there is little if anything specific to know, since it's a Maven project. Make sure the project settings use 1.8 or later Java environment.
 * [Maven](https://maven.apache.org/) - Dependency Management
 
 ## Authors

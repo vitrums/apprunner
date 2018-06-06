@@ -36,6 +36,17 @@
 
 
   <tasks>
+    <task name="cleanup">
+      <actions>
+        <operation>
+          <delete>
+            <file in="${mods_unpacked_dir}" contains="${mod_name}"/>
+          </delete>
+        </operation>
+      </actions>
+    </task>
+  
+  
     <task name="material_instance">
       <constants>
         <constant name="subpath"
@@ -94,16 +105,14 @@
       <actions>
         <application executable="${uasset_renamer}">
           <execute>
-            <file in="${to}" starts-with="CI_${character_to}_bdl"
-              contains="${ci_costume_lower_to}|${costume_lower_to}" />
-            <file in="${from}" starts-with="CI_${character_from}_bdl"
-              contains="${ci_costume_lower_from}|${costume_lower_from}" />
+            <file in="${to}" contains="CI_${character_to}_bdl_${ci_costume_lower_to}|CI_${character_to}_bdl_${costume_lower_to}" />
+            <file in="${from}" contains="CI_${character_from}_bdl_${ci_costume_lower_from}|CI_${character_from}_bdl_${costume_lower_from}" />
           </execute>
         </application>
         <operation ref="remove-new-suffix" />
         <operation>
           <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}\LOWER">
-            <file in="." starts-with="CI_${character_to}_bdl" ends-with=".uasset" />
+            <file in="." contains="CI_${character_to}_bdl" ends-with=".uasset" />
           </move>
         </operation>
       </actions>
@@ -120,16 +129,14 @@
       <actions>
         <application executable="${uasset_renamer}">
           <execute>
-            <file in="${to}" starts-with="CI_${character_to}_bdu"
-              contains="${ci_costume_upper_to}|${costume_upper_to}" />
-            <file in="${from}" starts-with="CI_${character_from}_bdu"
-              contains="${ci_costume_upper_from}|${costume_upper_from}" />
+            <file in="${to}" contains="CI_${character_to}_bdu_${ci_costume_upper_to}|CI_${character_to}_bdu_${costume_upper_to}" />
+            <file in="${from}" contains="CI_${character_from}_bdu_${ci_costume_upper_from}|CI_${character_from}_bdu_${costume_upper_from}" />
           </execute>
         </application>
         <operation ref="remove-new-suffix" />
         <operation>
           <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}\UPPER">
-            <file in="." starts-with="CI_${character_to}_bdu" ends-with=".uasset" />
+            <file in="." contains="CI_${character_to}_bdu" ends-with=".uasset" />
           </move>
         </operation>
       </actions>
@@ -146,16 +153,14 @@
       <actions>
         <application executable="${uasset_renamer}">
           <execute>
-            <file in="${to}" starts-with="CCI_${character_to}_bdl"
-              contains="${costume_lower_to}" />
-            <file in="${from}" starts-with="CCI_${character_from}_bdl"
-              contains="${costume_lower_from}" />
+            <file in="${to}" contains="CCI_${character_to}_bdl_${cci_costume_lower_to}|CCI_${character_to}_bdl_${costume_lower_to}" />
+            <file in="${from}" contains="CCI_${character_from}_bdl_${cci_costume_lower_from}|CCI_${character_from}_bdl_${costume_lower_from}" />
           </execute>
         </application>
         <operation ref="remove-new-suffix" />
         <operation>
           <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}\LOWER">
-            <file in="." starts-with="CCI_${character_to}_bdl" ends-with=".uasset" />
+            <file in="." contains="CCI_${character_to}_bdl" ends-with=".uasset" />
           </move>
         </operation>
       </actions>
@@ -172,16 +177,14 @@
       <actions>
         <application executable="${uasset_renamer}">
           <execute>
-            <file in="${to}" starts-with="CCI_${character_to}_bdu"
-              contains="${costume_upper_to}" />
-            <file in="${from}" starts-with="CCI_${character_from}_bdu"
-              contains="${costume_upper_from}" />
+            <file in="${to}" contains="CCI_${character_to}_bdu_${cci_costume_upper_to}|CCI_${character_to}_bdu_${costume_upper_to}" />
+            <file in="${from}" contains="CCI_${character_from}_bdu_${cci_costume_upper_from}|CCI_${character_from}_bdu_${costume_upper_from}" />
           </execute>
         </application>
         <operation ref="remove-new-suffix" />
         <operation>
           <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}\UPPER">
-            <file in="." starts-with="CCI_${character_to}_bdu" ends-with=".uasset" />
+            <file in="." contains="CCI_${character_to}_bdu" ends-with=".uasset" />
           </move>
         </operation>
       </actions>
@@ -279,6 +282,23 @@
             <file in="${mods_unpacked_dir}" contains="${mod_name}" />
             <file in="." contains="TekkenGame" />
           </delete>
+        </operation>
+      </actions>
+    </task>
+    
+    <task name="copy_properties_to_~mods_and_rename_to_mod_name">
+      <actions>
+        <operation>
+          <copy to=".">
+            <file in="config/examples" contains="common.properties" />
+          </copy>
+          <rename>
+            <files in="." contains="common.properties" />
+            <replace-all substring="common" with="${mod_name}"/>
+          </rename>
+          <move to="${t7_~mods_dir}">
+            <file in="." contains="${mod_name}.properties" />
+          </move>
         </operation>
       </actions>
     </task>

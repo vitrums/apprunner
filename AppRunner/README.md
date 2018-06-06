@@ -9,7 +9,7 @@ Use -h (--help) option to see usage.
 Typical launch will look like this:
 
 ```
-apprunner.exe -m my_module.xml -p my_values.properties -t task1 task2 ... taskN
+apprunner.exe -m my_module.xml -p common.properties -t task1 task2 ... taskN
 ```
 
 ### AppRunner directory structure
@@ -87,7 +87,7 @@ Then he can write in any task:
 <operation ref="move-harry-potter-and-rons-family-to-hogwarts" />
 ```
 
-### &lt;myproperties&gt;.properties
+### &lt;common&gt;.properties
 
 The format of *.properties* file adheres to a simple per line *key = value* entry structure. Each entry represents a constant of the global scope (*i.e.* **&lt;configuration&gt;** *level constant*). Also in case a module has its own definition of any constant appearing in properties file, values read from properties file take the highest priority. E.g. given the following definition inside a module of the constant:
 
@@ -114,7 +114,8 @@ A large amount of routine work a modder has to repeat for every new mod served t
 
 *config/examples/tekken7-module.xml's* tasks:
 
-- **material_instance**: runs *uassetrenamer.exe* against *.uasset* files specified in *&lt;your-values&gt;.properties* located in *TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\\${character}*.
+- **cleanup**: removes temporary directory ${mod_name} in ./mods_unpacked
+- **material_instance**: runs *uassetrenamer.exe* against *.uasset* files specified in *common.properties* located in *TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\\${character}*.
 - **character_item_lower**: -||- in *TekkenGame\Content\Character\Item\CharacterItem\\${character}\LOWER*
 - **character_item_upper**: -||- in *TekkenGame\Content\Character\Item\CharacterItem\\${character}\UPPER*
 - **customize_lower**: -||- in *TekkenGame\Content\Character\Item\Customize\\${character}\LOWER*
@@ -124,8 +125,9 @@ A large amount of routine work a modder has to repeat for every new mod served t
 - **pack_mod**: runs *u4pak.exe* against *TekkenGame* folder with *.uasset* files created by running previous tasks
 - **move_new_mod_to_~mods**: moves *${mod_name}.pak* to ~mods folder inside the Tekken 7 game directory
 - **delete_tmp_module_dir_with_uasset_files**: removes a temporary *TekkenGame* folder, created by running the task **pack_mod**
+- **copy_properties_to_~mods_and_rename_to_mod_name**: copies *common.properties* file user used to create this mod to *~mods* and renames it to *${mod_name}.properties*
 
-*Note:
+Note:
 - There is no such constant as ${character}. It has been written this way here only for the sake of brevity. Constants ${character_to} and ${character_from} are used instead. 
 - Make sure you have directories *mods_packed* and *mods_unpacked* to store temporary files.
 

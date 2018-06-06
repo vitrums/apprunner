@@ -145,8 +145,11 @@ public class AppRunner {
         Util.correctFileSeparator(Util.CONFIG_DIR + File.separator + cliArgs.properties))) {
       Properties properties = new Properties();
       properties.load(inStream);
-      properties.forEach((name, value) -> settings.getConfiguration()
-          .putConstant(String.valueOf(name), String.valueOf(value)));
+      properties.forEach((name, value) -> {
+        if (!"".equals(String.valueOf(value).replace(" ", ""))) {
+          settings.getConfiguration().putConstant(String.valueOf(name), String.valueOf(value));
+        }
+      });
 
       NameReferenceResolver resolver = new NameReferenceResolver(settings);
 
@@ -365,8 +368,7 @@ public class AppRunner {
                   public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
                       throws IOException {
                     Path newdir = target.resolve(source.relativize(dir));
-                    logger
-                        .finest(String.format("[dir]=%s [newdir]=%s", dir, newdir));
+                    logger.finest(String.format("[dir]=%s [newdir]=%s", dir, newdir));
                     try {
                       Files.copy(dir, newdir);
                     } catch (FileAlreadyExistsException x) {
@@ -451,8 +453,8 @@ public class AppRunner {
                     filePaths = searchFiles((FileNames) fileNameBase);
                   }
                 } catch (NoSuchFileException e) {
-                  logger.warning(String.format("Trying to delete non-existing file. %s",
-                      e.getMessage()));
+                  logger.warning(
+                      String.format("Trying to delete non-existing file. %s", e.getMessage()));
                   continue DELETE;
                 }
                 for (Path filePath : filePaths) {

@@ -114,12 +114,12 @@ A large amount of routine work a modder has to repeat for every new mod served t
 
 config/examples/tekken7-module.xml's tasks:
 
-- **material_instance**: runs *uassetrenamer.exe* against *.uasset* files specified in *&lt;your-values&gt;.properties* located in *TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\${character}*.
-- **character_item_lower**: -||- in *TekkenGame\Content\Character\Item\CharacterItem\${character}\LOWER*
-- **character_item_upper**: -||- in *TekkenGame\Content\Character\Item\CharacterItem\${character}\UPPER*
-- **customize_lower**: -||- in *TekkenGame\Content\Character\Item\Customize\${character}\LOWER*
-- **customize_upper**: -||- in *TekkenGame\Content\Character\Item\Customize\${character}\UPPER*
-- **replace_images_cus_item_lower**: -||- in *TekkenGame\Content\UI_common\Texture2D\ReplaceImages\CUS_ITEM\${character}*
+- **material_instance**: runs *uassetrenamer.exe* against *.uasset* files specified in *&lt;your-values&gt;.properties* located in *TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\\${character}*.
+- **character_item_lower**: -||- in *TekkenGame\Content\Character\Item\CharacterItem\\${character}\LOWER*
+- **character_item_upper**: -||- in *TekkenGame\Content\Character\Item\CharacterItem\\${character}\UPPER*
+- **customize_lower**: -||- in *TekkenGame\Content\Character\Item\Customize\\${character}\LOWER*
+- **customize_upper**: -||- in *TekkenGame\Content\Character\Item\Customize\\${character}\UPPER*
+- **replace_images_cus_item_lower**: -||- in *TekkenGame\Content\UI_common\Texture2D\ReplaceImages\CUS_ITEM\\${character}*
 - **replace_images_cus_item_upper**: same
 - **pack_mod**: runs *u4pak.exe* against *TekkenGame* folder with *.uasset* files created by running previous tasks
 - **move_new_mod_to_~mods**: moves *${mod_name}.pak* to ~mods folder inside the Tekken 7 game directory

@@ -14,6 +14,7 @@ apprunner.exe -m my_module.xml -p my_values.properties -t task1 task2 ... taskN
 
 ### AppRunner directory structure
 
+```
 apprunner/
 ├── apprunner.exe
 ├── apprunner_log.txt
@@ -21,6 +22,7 @@ apprunner/
     ├── apprunner-module.xsd
     ├── <your-module>.xml
     └── <your-properties>.properties
+```
 
 ### <your-module>.xml
 
@@ -43,7 +45,7 @@ AppRunner will search for *config/my-parent-module1.xml* and *config/examples/my
 
 *Note: circular dependence is considered to be an error, and the program will notify user about this fact by failing fast with an appropriate exception being thrown.*
 
-Direct children of the root element are **<configuration>** and **<tasks>** elements.
+Direct children of the root element are **&lt;configuration&gt;** and **<tasks>** elements.
 
 The first element **<configuration>** might have one **<constants>** section to define global scope constants (*i.e. (key,value) pairs*) accessible anywhere including tasks. User refers to a constant *homedir* declared as *<constant name="homedir" value="c:\users\Johndoe" />* as follows: *<files in="${homedir}" ends-with=".txt" />*. Also there might be one **<actions>** section, where user defines *operations* to later refer to inside the tasks as follows: *<operation ref="remove-files-inside-trash" />*.
 

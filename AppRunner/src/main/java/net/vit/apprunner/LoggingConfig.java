@@ -2,6 +2,9 @@ package net.vit.apprunner;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -33,6 +36,11 @@ public class LoggingConfig {
     logger.setUseParentHandlers(false);
     
     if (logFileHandler == null) {
+      String logFileName = "apprunner_log.txt";
+      Path logFilePath = Paths.get(logFileName);
+      if (!Files.exists(logFilePath)) {
+        Files.createFile(logFilePath);
+      }
       logFileHandler = new FileHandler("apprunner_log.txt", true);
       // String.format(format, date, source, logger, level, message, thrown);
       logFileHandler.setFormatter(new SimpleFormatter());

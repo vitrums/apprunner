@@ -1,6 +1,6 @@
 # AppRunner
 
-This application is designed to facilitate the task of grouping and performing a set of typical operations upon files, such as move, copy, delete and rename. It can also run external processes (hence the name "AppRunner"). You can describe its functionality as a small subset of operations from shell script. The configuration is performed through editing <module>.xml file and <launch-specific>.properties file. One should run AppRunner against a module and at least one task specified (later on about tasks). The main idea is that user doesn't have to be an expert in shell script, batch or any programming language to work with this tool. Instead it has a declarative XML style, which is closer to human language. Therefore it should be relatively easy to adjust the a ready-to-use solution such as the main example *config/examples/tekken7-module.xml (more about it further in this readme)* to add new features following the existing pattern, or even create the new module from scratch to serve a completely different purpose.
+This application is designed to facilitate the task of grouping and performing a set of typical operations upon files, such as move, copy, delete and rename. It can also run external processes (hence the name "AppRunner"). You can describe its functionality as a small subset of operations from shell script. The configuration is performed through editing &lt;module&gt;.xml file and &lt;launch-specific&gt;.properties file. One should run AppRunner against a module and at least one task specified (later on about tasks). The main idea is that user doesn't have to be an expert in shell script, batch or any programming language to work with this tool. Instead it has a declarative XML style, which is closer to human language. Therefore it should be relatively easy to adjust the a ready-to-use solution such as the main example *config/examples/tekken7-module.xml (more about it further in this readme)* to add new features following the existing pattern, or even create the new module from scratch to serve a completely different purpose.
 
 ## Getting Started
 
@@ -24,7 +24,7 @@ apprunner/
     └── <your-properties>.properties
 ```
 
-### <your-module>.xml
+### &lt;your-module&gt;.xml
 
 Module configuration file should refer to *apprunner-module.xsd* file in the following fashion:
 
@@ -32,7 +32,7 @@ Module configuration file should refer to *apprunner-module.xsd* file in the fol
 <apprunner-module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="apprunner-module.xsd">
 ```
-where **<apprunner-module>** is the root element of the document and **"apprunner-module.xsd"** is a relative path to the XSD document stored on a local drive. AppRunner runs an additional validation of a XML file given as a *-m* argument against this XSD file. User must specify exactly one module file as a command line argument. However, this doesn't undermine the general capabilities of utilizing more than one module during a single run due to the mechanism of inheritance. Include a mention of a parent module in the form:
+where **&lt;apprunner-module&gt;** is the root element of the document and **"apprunner-module.xsd"** is a relative path to the XSD document stored on a local drive. AppRunner runs an additional validation of a XML file given as a *-m* argument against this XSD file. User must specify exactly one module file as a command line argument. However, this doesn't undermine the general capabilities of utilizing more than one module during a single run due to the mechanism of inheritance. Include a mention of a parent module in the form:
 
 ```
 <inherits>
@@ -45,15 +45,15 @@ AppRunner will search for *config/my-parent-module1.xml* and *config/examples/my
 
 *Note: circular dependence is considered to be an error, and the program will notify user about this fact by failing fast with an appropriate exception being thrown.*
 
-Direct children of the root element are **&lt;configuration&gt;** and **<tasks>** elements.
+Direct children of the root element are **&lt;configuration&gt;** and **&lt;tasks&gt;** elements.
 
-The first element **<configuration>** might have one **<constants>** section to define global scope constants (*i.e. (key,value) pairs*) accessible anywhere including tasks. User refers to a constant *homedir* declared as *<constant name="homedir" value="c:\users\Johndoe" />* as follows: *<files in="${homedir}" ends-with=".txt" />*. Also there might be one **<actions>** section, where user defines *operations* to later refer to inside the tasks as follows: *<operation ref="remove-files-inside-trash" />*.
+The first element **&lt;configuration&gt;** might have one **&lt;constants&gt;** section to define global scope constants (*i.e. (key,value) pairs*) accessible anywhere including tasks. User refers to a constant *homedir* declared as *&lt;constant name="homedir" value="c:\users\Johndoe" /&gt;* as follows: *&lt;files in="${homedir}" ends-with=".txt" /&gt;*. Also there might be one **&lt;actions&gt;** section, where user defines *operations* to later refer to inside the tasks as follows: *&lt;operation ref="remove-files-inside-trash" /&gt;*.
 
-The second element **<tasks>** lists the actual jobs of this module. User can select any tasks from this list to execute with *-t* key followed by task names. Any task might declare its own constants within **<constants>** child element of the corresponding parent element **<task>**. They will be visible only within this task.
+The second element **&lt;tasks&gt;** lists the actual jobs of this module. User can select any tasks from this list to execute with *-t* key followed by task names. Any task might declare its own constants within **&lt;constants&gt;** child element of the corresponding parent element **&lt;task&gt;**. They will be visible only within this task.
 
-Each task element has to include exactly one **<actions>** element, which in its turn is a parent node for nodes **<application>** and **<operation>** that may go in any order and in any number. This way user is allowed to declare a complicated task with a bloated **<actions>** section, that does a lot of things in a bulk, or he can choose to reduce the granularity by splitting the work across a larger number of more lightweight tasks.
+Each task element has to include exactly one **&lt;actions&gt;** element, which in its turn is a parent node for nodes **&lt;application&gt;** and **&lt;operation&gt;** that may go in any order and in any number. This way user is allowed to declare a complicated task with a bloated **&lt;actions&gt;** section, that does a lot of things in a bulk, or he can choose to reduce the granularity by splitting the work across a larger number of more lightweight tasks.
 
-**<application>** element represents an external process. Each **<execute>** entry corresponds to one execution of this process. User defines command line arguments within **<execute>**. E.g. this first execute element:
+**&lt;application&gt;** element represents an external process. Each **&lt;execute&gt;** entry corresponds to one execution of this process. User defines command line arguments within **&lt;execute&gt;**. E.g. this first execute element:
 
 ```
 <application executable="${path_to_git}\git.exe">
@@ -67,7 +67,7 @@ Each task element has to include exactly one **<actions>** element, which in its
 ```
 will tell AppRunner to run *c:\git\git.exe commit -c "ORIG_HEAD"*.
 
-**<operation>** represents a set of actions upon files such as move, copy, delete and rename. User can declare operations within **<actions>** block of a single task, or within **<actions>** block of **<configuration>** element. The latter allows user to later reuse this operation in more than one task. Say user declared an operation like this:
+**&lt;operation&gt;** represents a set of actions upon files such as move, copy, delete and rename. User can declare operations within **&lt;actions&gt;** block of a single task, or within **&lt;actions&gt;** block of **&lt;configuration&gt;** element. The latter allows user to later reuse this operation in more than one task. Say user declared an operation like this:
 
 ```
 <configuration>
@@ -87,9 +87,9 @@ Then he can write in any task:
 <operation ref="move-harry-potter-and-rons-family-to-hogwarts" />
 ```
 
-### <myproperties>.properties
+### &lt;myproperties&gt;.properties
 
-The format of *.properties* file adheres to a simple per line *key = value* entry structure. Each entry represents a constant of the global scope (*i.e.* **<configuration>** *level constant*). Also in case a module has its own definition of any constant appearing in properties file, values read from properties file take the highest priority. E.g. given the following definition inside a module of the constant:
+The format of *.properties* file adheres to a simple per line *key = value* entry structure. Each entry represents a constant of the global scope (*i.e.* **&lt;configuration&gt;** *level constant*). Also in case a module has its own definition of any constant appearing in properties file, values read from properties file take the highest priority. E.g. given the following definition inside a module of the constant:
 
     <constant name="myconst" value="some_value" />,
     
@@ -114,7 +114,7 @@ A large amount of routine work a modder has to repeat for every new mod served t
 
 config/examples/tekken7-module.xml's tasks:
 
-- **material_instance**: runs *uassetrenamer.exe* against *.uasset* files specified in *<your-values>.properties* located in *TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\${character}*.
+- **material_instance**: runs *uassetrenamer.exe* against *.uasset* files specified in *&lt;your-values&gt;.properties* located in *TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\${character}*.
 - **character_item_lower**: -||- in *TekkenGame\Content\Character\Item\CharacterItem\${character}\LOWER*
 - **character_item_upper**: -||- in *TekkenGame\Content\Character\Item\CharacterItem\${character}\UPPER*
 - **customize_lower**: -||- in *TekkenGame\Content\Character\Item\Customize\${character}\LOWER*

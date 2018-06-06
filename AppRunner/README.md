@@ -112,7 +112,7 @@ then mr.Doe becomes a vegan.
 
 A large amount of routine work a modder has to repeat for every new mod served the main inspiration for writing this application. Hence *config/examples/tekken7-module.xml* along with *lili_as_master_raven.properties* is the main example, demonstrating the advantages of using this tool.
 
-config/examples/tekken7-module.xml's tasks:
+*config/examples/tekken7-module.xml's* tasks:
 
 - **material_instance**: runs *uassetrenamer.exe* against *.uasset* files specified in *&lt;your-values&gt;.properties* located in *TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\\${character}*.
 - **character_item_lower**: -||- in *TekkenGame\Content\Character\Item\CharacterItem\\${character}\LOWER*
@@ -126,6 +126,13 @@ config/examples/tekken7-module.xml's tasks:
 - **delete_tmp_module_dir_with_uasset_files**: removes a temporary *TekkenGame* folder, created by running the task **pack_mod**
 
 It uses *mods_packed* and *mods_unpacked* directories to store temporary files.
+
+Constants inside *config/examples/tekken7-module.xml* to tweak:
+
+- **quickbms_t7_out_dir**: you should specify the directory with *.uasset* files of Tekken 7 as a result of running quickbms against pak archives
+- **uasset_renamer_dir**: directory with *uassetrenamer.exe*
+- **u4pak_dir**: directory with *u4pak.exe*
+- **t7_~mods_dir**: path to ~mods directory of installed Tekken 7 on your computer
 
 The batch file (*make_simple_mod.bat*) running the tool to create a most common mod, which simply replaces specific upper and lower parts of one character with specific upper and lower parts of another character, but doesn't swap material instance will consist of the following line:
 

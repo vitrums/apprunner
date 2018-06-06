@@ -7,12 +7,12 @@ import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
 
 /**
- * Logger formatter to display information in debug handler.
+ * Logger formatter to display information in std out.
  * 
  * @author vit
  */
-public class DebugLoggingFormatter extends SimpleFormatter {
-  private static final String format = "[%1$tF %1$tT] %4$-7s %2$-50s: %5$s%6$s%n";
+public class SysoutLoggingFormatter extends SimpleFormatter {
+  private static final String format = "[%1$tT] %4$-7s: %5$s%6$s%n";
   private final Date dat = new Date();
 
   public synchronized String format(LogRecord record) {

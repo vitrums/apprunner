@@ -26,16 +26,23 @@ public class Settings {
   }
 
   /**
-   * Model for {@literal <file>} tag.
+   * Model for {@literal <file> and <files>} tags.
    */
-  static class FileName implements Task.Application.ApplicationInput, Resolvable {
+  static abstract class FileNameBase implements Task.Application.ApplicationInput, Resolvable {
     private String in;
     private Optional<String> startsWith = Optional.empty();
     private Optional<String> endsWith = Optional.empty();
     private Optional<String> contains = Optional.empty();
 
-    FileName(String in) {
+    FileNameBase(String in) {
       this.in = in;
+    }
+    
+    FileNameBase(FileNameBase fileNameBase) {
+      this.in = fileNameBase.in;
+      this.startsWith = fileNameBase.startsWith;
+      this.endsWith = fileNameBase.endsWith;
+      this.contains = fileNameBase.contains;
     }
 
     String getIn() {
@@ -76,6 +83,32 @@ public class Settings {
       contains.ifPresent((val) -> setContains(resolver.resolve(val, scope)));
       startsWith.ifPresent((val) -> setStartsWith(resolver.resolve(val, scope)));
       endsWith.ifPresent((val) -> setEndsWith(resolver.resolve(val, scope)));
+    }
+  }
+  
+  /**
+   * Model for {@literal <file>} tag.
+   */
+  static class FileName extends FileNameBase {
+    public FileName(String in) {
+      super(in);
+    }
+    
+    public FileName(FileNameBase fileNameBase) {
+      super(fileNameBase);
+    }
+  }
+  
+  /**
+   * Model for {@literal <files>} tags.
+   */
+  static class FileNames extends FileNameBase {
+    public FileNames(String in) {
+      super(in);
+    }
+    
+    public FileNames(FileNameBase fileNameBase) {
+      super(fileNameBase);
     }
   }
 
@@ -260,19 +293,19 @@ public class Settings {
           }
         }
 
-        private final FileName fileName;
+        private final FileNames fileNames;
         private final List<RenameOption> renameOptions;
 
-        Rename(FileName fileName, RenameOption... renameOptions) {
-          this.fileName = fileName;
+        Rename(FileNames fileNames, RenameOption... renameOptions) {
+          this.fileNames = fileNames;
           this.renameOptions = new ArrayList<>();
           if (renameOptions != null) {
             Collections.addAll(this.renameOptions, renameOptions);
           }
         }
 
-        FileName getFileName() {
-          return fileName;
+        FileNames getFileNames() {
+          return fileNames;
         }
 
         List<RenameOption> getRenameOptions() {
@@ -285,7 +318,7 @@ public class Settings {
 
         @Override
         public void resolveNames(NameReferenceResolver resolver, Scope scope) {
-          fileName.resolveNames(resolver, scope);
+          fileNames.resolveNames(resolver, scope);
           renameOptions.stream().filter(ReplaceAll.class::isInstance).map(ReplaceAll.class::cast)
               .forEach((replaceAll) -> replaceAll.resolveNames(resolver, scope));
         }
@@ -295,10 +328,10 @@ public class Settings {
        * Base class for {@link Move} and {@link Copy}.
        */
       static abstract class MoveOrCopy implements InternalOp {
-        private final List<FileName> fileNames;
+        private final List<FileNameBase> fileNames;
         private String to;
 
-        MoveOrCopy(Collection<? extends FileName> fileNames, String to) {
+        MoveOrCopy(Collection<? extends FileNameBase> fileNames, String to) {
           this.fileNames = new ArrayList<>(fileNames);
           this.to = to;
         }
@@ -307,7 +340,7 @@ public class Settings {
           return to;
         }
 
-        List<FileName> getFileNames() {
+        List<FileNameBase> getFileNames() {
           return Collections.unmodifiableList(fileNames);
         }
 
@@ -322,7 +355,7 @@ public class Settings {
        * Model for {@literal <move>} tag.
        */
       static class Move extends MoveOrCopy {
-        public Move(Collection<? extends FileName> fileNames, String to) {
+        public Move(Collection<? extends FileNameBase> fileNames, String to) {
           super(fileNames, to);
         }
       }
@@ -331,7 +364,7 @@ public class Settings {
        * Model for {@literal <copy>} tag.
        */
       static class Copy extends MoveOrCopy {
-        public Copy(Collection<? extends FileName> fileNames, String to) {
+        public Copy(Collection<? extends FileNameBase> fileNames, String to) {
           super(fileNames, to);
         }
       }
@@ -340,13 +373,13 @@ public class Settings {
        * Model for {@literal <delete>} tag.
        */
       static class Delete implements InternalOp {
-        private final List<FileName> fileNames;
+        private final List<FileNameBase> fileNames;
 
-        Delete(Collection<? extends FileName> fileNames) {
+        Delete(Collection<? extends FileNameBase> fileNames) {
           this.fileNames = new ArrayList<>(fileNames);
         }
 
-        List<FileName> getFileNames() {
+        List<FileNameBase> getFileNames() {
           return Collections.unmodifiableList(fileNames);
         }
 

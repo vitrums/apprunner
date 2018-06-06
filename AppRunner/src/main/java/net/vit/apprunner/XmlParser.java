@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.jdom2.*;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.input.sax.XMLReaderJDOMFactory;
@@ -49,8 +48,8 @@ public class XmlParser {
   Settings parseModuleXml() throws JDOMException, IOException {
     settings = new Settings();
 
-    XMLReaderJDOMFactory factory =
-        new XMLReaderXSDFactory(new File(Util.CONFIG_DIR + "apprunner-module.xsd"));
+    XMLReaderJDOMFactory factory = new XMLReaderXSDFactory(new File(
+        Util.correctFileSeparator(Util.CONFIG_DIR + File.separator + "apprunner-module.xsd")));
     builder = new SAXBuilder(factory);
     parseModuleRec(cliArgs.module);
 
@@ -72,7 +71,8 @@ public class XmlParser {
       throw new JDOMException(errorMessage);
     }
 
-    Document document = builder.build(new File(Util.CONFIG_DIR + module));
+    Document document = builder
+        .build(new File(Util.correctFileSeparator(Util.CONFIG_DIR + File.separator + module)));
     logger.finer(String.format("Parsing \"%s\".", module));
 
     Element rootElement = document.getRootElement();
@@ -137,8 +137,8 @@ public class XmlParser {
       String elementName = internalOpElement.getName();
       if ("rename".equals(elementName)) {
         Element renameElement = internalOpElement;
-        FileName fileName = createFileName(renameElement.getChild("file"));
-        Task.Operation.Rename rename = new Task.Operation.Rename(fileName);
+        FileNames fileNames = (FileNames) createFileNameBase(renameElement.getChild("files"));
+        Task.Operation.Rename rename = new Task.Operation.Rename(fileNames);
         renameElement.getChildren().stream()
             .filter((element) -> element.getName().equals("replace-all"))
             .forEach((replaceAllElement) -> {
@@ -151,15 +151,15 @@ public class XmlParser {
         internals.add(rename);
       } else if ("move".equals(elementName) || "copy".equals(elementName)) {
         String to = internalOpElement.getAttributeValue("to");
-        List<FileName> fileNames = internalOpElement.getChildren().stream()
-            .map((fileElement) -> createFileName(fileElement)).collect(Collectors.toList());
+        List<FileNameBase> fileNames = internalOpElement.getChildren().stream()
+            .map((fileElement) -> createFileNameBase(fileElement)).collect(Collectors.toList());
         Task.Operation.MoveOrCopy moveOrCopy =
             "move".equals(elementName) ? new Task.Operation.Move(fileNames, to)
                 : new Task.Operation.Copy(fileNames, to);
         internals.add(moveOrCopy);
       } else if ("delete".equals(elementName)) {
-        List<FileName> fileNames = internalOpElement.getChildren().stream()
-            .map((fileElement) -> createFileName(fileElement)).collect(Collectors.toList());
+        List<FileNameBase> fileNames = internalOpElement.getChildren().stream()
+            .map((fileElement) -> createFileNameBase(fileElement)).collect(Collectors.toList());
         Task.Operation.Delete delete = new Task.Operation.Delete(fileNames);
         internals.add(delete);
       } else {
@@ -175,28 +175,31 @@ public class XmlParser {
   }
 
   /**
-   * Parses {@literal <file>} tag.
+   * Parses {@literal <file> or <files>} tag.
    * 
    * @param fileElement
-   * @return {@link FileName} object
+   * @return {@link FileNameBase} object
    */
-  private FileName createFileName(Element fileElement) {
-    FileName fileName = new FileName(fileElement.getAttributeValue("in"));
-    Optional.ofNullable(fileElement.getAttributeValue("contains")).ifPresent(fileName::setContains);
+  private FileNameBase createFileNameBase(Element fileElement) {
+    FileNameBase fileNameBase =
+        "file".equals(fileElement.getName()) ? new FileName(fileElement.getAttributeValue("in"))
+            : new FileNames(fileElement.getAttributeValue("in"));
+    Optional.ofNullable(fileElement.getAttributeValue("contains"))
+        .ifPresent(fileNameBase::setContains);
     Optional.ofNullable(fileElement.getAttributeValue("starts-with"))
-        .ifPresent(fileName::setStartsWith);
+        .ifPresent(fileNameBase::setStartsWith);
     Optional.ofNullable(fileElement.getAttributeValue("ends-with"))
-        .ifPresent(fileName::setEndsWith);
-    if (!fileName.getStartsWith().isPresent() && !fileName.getContains().isPresent()
-        && !fileName.getEndsWith().isPresent()) {
+        .ifPresent(fileNameBase::setEndsWith);
+    if (!fileNameBase.getStartsWith().isPresent() && !fileNameBase.getContains().isPresent()
+        && !fileNameBase.getEndsWith().isPresent()) {
       String errorMessage =
           "For element <file> at least one of the arguments \"startsWith\", \"endsWith\" or "
-              + "\"contains\" must be specified. Argument in=" + fileName.getIn();
+              + "\"contains\" must be specified. Argument in=" + fileNameBase.getIn();
       logger.severe(errorMessage);
       throw new IllegalArgumentException(errorMessage);
     }
 
-    return fileName;
+    return fileNameBase;
   }
 
   /**
@@ -220,7 +223,7 @@ public class XmlParser {
                 "\"" + cliInputElement.getAttributeValue("value") + "\""));
             break;
           case "file":
-            inputs.add(createFileName(cliInputElement));
+            inputs.add(createFileNameBase(cliInputElement));
             break;
           default:
             String errorMessage = "Default case was met. We should never be here.";

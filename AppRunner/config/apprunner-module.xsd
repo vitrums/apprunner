@@ -52,7 +52,7 @@
     <xs:attribute name="namespace" type="xs:string" use="optional" />
   </xs:complexType>
 
-  <xs:complexType name="file_type">
+  <xs:complexType name="file_name_type">
     <xs:annotation>
       <xs:documentation source="description">
         Denotes a valid file name of a file residing in the
@@ -71,12 +71,12 @@
   <xs:complexType name="rename_type">
     <xs:annotation>
       <xs:documentation source="description">
-        Directive to rename the given file by applying one
+        Directive to rename the given files by applying one
         or more of the rename options.
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="file" type="file_type" />
+      <xs:element name="files" type="file_name_type" />
       <xs:element name="replace-all" minOccurs="0">
         <xs:annotation>
           <xs:documentation source="description">
@@ -96,13 +96,11 @@
   <xs:complexType name="move_type">
     <xs:annotation>
       <xs:documentation source="description">
-        Directive to move the given file to the directory
+        Directive to move the given file(s) to the directory
         represented by the "to" attribute.
       </xs:documentation>
     </xs:annotation>
-    <xs:sequence>
-      <xs:element name="file" type="file_type" maxOccurs="unbounded" />
-    </xs:sequence>
+    <xs:group ref="file_names_group" maxOccurs="unbounded" />
     <xs:attribute name="to" type="non_empty_string_type" />
   </xs:complexType>
   
@@ -118,11 +116,21 @@
       <xs:element name="copy" type="move_type" />
       <xs:element name="delete">
         <xs:complexType>
-          <xs:sequence>
-            <xs:element name="file" type="file_type" maxOccurs="unbounded" />
-          </xs:sequence>
+          <xs:group ref="file_names_group" maxOccurs="unbounded" />
         </xs:complexType>
       </xs:element>
+    </xs:choice>
+  </xs:group>
+  
+  <xs:group name="file_names_group">
+    <xs:annotation>
+      <xs:documentation source="description">
+        Either a single file name or a collection of file names.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:choice>
+      <xs:element name="file" type="file_name_type" />
+      <xs:element name="files" type="file_name_type" />
     </xs:choice>
   </xs:group>
 
@@ -200,7 +208,7 @@
                       <xs:attribute name="value" type="non_empty_string_type" />
                     </xs:complexType>
                   </xs:element>
-                  <xs:element name="file" type="file_type" />
+                  <xs:element name="file" type="file_name_type" />
                 </xs:choice>
               </xs:complexType>
             </xs:element>
@@ -239,7 +247,7 @@
   </xs:complexType>
 
   <!-- Root -->
-  <xs:element name="app-runner-module">
+  <xs:element name="apprunner-module">
     <xs:annotation>
       <xs:documentation source="description">
         Root element of the document.

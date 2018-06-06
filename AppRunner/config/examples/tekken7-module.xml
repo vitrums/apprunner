@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<app-runner-module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="apprunner-module.xsd">
+<apprunner-module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../apprunner-module.xsd">
   <configuration>
     <!-- When constant tag is used as a pure declaration (only name attribute is set and and value is 
       not specified), AppRunner first tries to find the value in child modules (if any). Then it looks inside 
@@ -27,7 +27,7 @@
     <actions>
       <operation name="remove-new-suffix">
         <rename>
-          <file in="." ends-with="-new.uasset" />
+          <files in="." ends-with="-new.uasset" />
           <replace-all substring="-new.uasset" with=".uasset" />
         </rename>
       </operation>
@@ -76,8 +76,8 @@
         </application>
         <operation ref="remove-new-suffix" />
         <operation>
-          <move to="${u4pak_dir}\${mod_name}\${subpath}\${character_to}">
-            <file in="${uasset_renamer_dir}" ends-with=".uasset" />
+          <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}">
+            <files in="." ends-with=".uasset" />
           </move>
         </operation>
       </actions>
@@ -103,7 +103,7 @@
         <operation ref="remove-new-suffix" />
         <operation>
           <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}\LOWER">
-            <file in="." ends-with=".uasset" />
+            <file in="." starts-with="CI_${character_to}_bdl" ends-with=".uasset" />
           </move>
         </operation>
       </actions>
@@ -129,7 +129,111 @@
         <operation ref="remove-new-suffix" />
         <operation>
           <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}\UPPER">
-            <file in="." ends-with=".uasset" />
+            <file in="." starts-with="CI_${character_to}_bdu" ends-with=".uasset" />
+          </move>
+        </operation>
+      </actions>
+    </task>
+    
+    
+    <task name="customize_lower">
+      <constants>
+        <constant name="subpath" value="TekkenGame\Content\Character\Item\Customize" />
+        <constant name="to" value="${quickbms_t7_out_dir}\${subpath}\${character_to}\LOWER" />
+        <constant name="from"
+          value="${quickbms_t7_out_dir}\${subpath}\${character_from}\LOWER" />
+      </constants>
+      <actions>
+        <application executable="${uasset_renamer}">
+          <execute>
+            <file in="${to}" starts-with="CCI_${character_to}_bdl"
+              contains="${costume_lower_to}" />
+            <file in="${from}" starts-with="CCI_${character_from}_bdl"
+              contains="${costume_lower_from}" />
+          </execute>
+        </application>
+        <operation ref="remove-new-suffix" />
+        <operation>
+          <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}\LOWER">
+            <file in="." starts-with="CCI_${character_to}_bdl" ends-with=".uasset" />
+          </move>
+        </operation>
+      </actions>
+    </task>
+    
+    
+    <task name="customize_upper">
+      <constants>
+        <constant name="subpath" value="TekkenGame\Content\Character\Item\Customize" />
+        <constant name="to" value="${quickbms_t7_out_dir}\${subpath}\${character_to}\UPPER" />
+        <constant name="from"
+          value="${quickbms_t7_out_dir}\${subpath}\${character_from}\UPPER" />
+      </constants>
+      <actions>
+        <application executable="${uasset_renamer}">
+          <execute>
+            <file in="${to}" starts-with="CCI_${character_to}_bdu"
+              contains="${costume_upper_to}" />
+            <file in="${from}" starts-with="CCI_${character_from}_bdu"
+              contains="${costume_upper_from}" />
+          </execute>
+        </application>
+        <operation ref="remove-new-suffix" />
+        <operation>
+          <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}\UPPER">
+            <file in="." starts-with="CCI_${character_to}_bdu" ends-with=".uasset" />
+          </move>
+        </operation>
+      </actions>
+    </task>
+    
+    
+    <task name="replace_images_cus_item_lower">
+      <constants>
+        <constant name="subpath" value="TekkenGame\Content\UI_common\Texture2D\ReplaceImages\CUS_ITEM" />
+        <constant name="to" value="${quickbms_t7_out_dir}\${subpath}\${character_to}" />
+        <constant name="from"
+          value="${quickbms_t7_out_dir}\${subpath}\${character_from}" />
+      </constants>
+      <actions>
+        <application executable="${uasset_renamer}">
+          <execute>
+            <file in="${to}" starts-with="CUS_ITEM_${character_to}_bdl"
+              contains="${costume_lower_to}" />
+            <file in="${from}" starts-with="CUS_ITEM_${character_from}_bdl"
+              contains="${costume_lower_from}" />
+          </execute>
+        </application>
+        <operation ref="remove-new-suffix" />
+        <operation>
+          <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}">
+            <file in="." starts-with="CUS_ITEM_${character_to}_bdl" ends-with=".uasset" />
+          </move>
+        </operation>
+      </actions>
+    </task>
+    
+    
+    <task name="replace_images_cus_item_upper">
+      <constants>
+        <constant name="subpath" value="TekkenGame\Content\UI_common\Texture2D\ReplaceImages\CUS_ITEM" />
+        <constant name="to" value="${quickbms_t7_out_dir}\${subpath}\${character_to}" />
+        <constant name="from"
+          value="${quickbms_t7_out_dir}\${subpath}\${character_from}" />
+      </constants>
+      <actions>
+        <application executable="${uasset_renamer}">
+          <execute>
+            <file in="${to}" starts-with="CUS_ITEM_${character_to}_bdu"
+              contains="${costume_upper_to}" />
+            <file in="${from}" starts-with="CUS_ITEM_${character_from}_bdu"
+              contains="${costume_upper_from}" />
+          </execute>
+        </application>
+        <operation ref="remove-new-suffix" />
+        <operation>
+          <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}">
+            <file in="." starts-with="CUS_ITEM_${character_to}_bdu" ends-with=".uasset" />
           </move>
         </operation>
       </actions>
@@ -138,11 +242,19 @@
 
     <task name="pack_mod">
       <actions>
+        <operation>
+          <delete>
+            <file in="." contains="TekkenGame" />
+          </delete>
+          <move to=".">
+            <file in="${mods_unpacked_dir}/${mod_name}" contains="TekkenGame" />
+          </move>
+        </operation>
         <application executable="${u4pak}">
           <execute>
             <cli-key value="pack" />
             <cli-value value="${mods_u4paked_dir}/${mod_name}.pak" />
-            <cli-value value="${mods_unpacked_dir}/${mod_name}/TekkenGame" />
+            <cli-value value="TekkenGame" />
           </execute>
         </application>
       </actions>
@@ -153,10 +265,22 @@
       <actions>
         <operation>
           <move to="${t7_~mods_dir}">
-            <file in="${mods_u4paked_dir}" ends-with=".pak" />
+            <file in="${mods_u4paked_dir}" contains="${mod_name}" ends-with=".pak" />
           </move>
         </operation>
       </actions>
     </task>
+    
+    
+    <task name="delete_tmp_module_dir_with_uasset_files">
+      <actions>
+        <operation>
+          <delete>
+            <file in="${mods_unpacked_dir}" contains="${mod_name}" />
+            <file in="." contains="TekkenGame" />
+          </delete>
+        </operation>
+      </actions>
+    </task>
   </tasks>
-</app-runner-module>
+</apprunner-module>

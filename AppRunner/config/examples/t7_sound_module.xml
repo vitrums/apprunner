@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apprunner-module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../apprunner-module.xsd">
+  <inherits>
+    <module name="examples\tekken7-module.xml" />
+  </inherits>
+
+  <!-- Just an example of inheritance mechanism. -->
+  <tasks>
+    <task name="SoundLiliAsMasterRaven">
+      <constants>
+        <constant name="subpath" value="TekkenGame\Content\Sound\Voice" />
+        <constant name="to" value="${quickbms_t7_out_dir}\${subpath}\${character_to}" />
+        <constant name="from" value="${quickbms_t7_out_dir}\${subpath}\${character_from}" />
+      </constants>
+      <actions>
+        <application executable="uasset_renamer">
+          <execute>
+            <file in="${to}" starts-with="_s_mon_atck_m01" />
+            <file in="${from}" starts-with="frv_atk_m01" />
+          </execute>
+          <execute>
+            <file in="${to}" starts-with="_s_mon_atck_m02" />
+            <file in="${from}" starts-with="frv_atk_m02" />
+          </execute>
+          <execute>
+            <file in="${to}" starts-with="_s_mon_atck_s01" />
+            <file in="${from}" starts-with="frv_atk_s01" />
+          </execute>
+          <execute>
+            <file in="${to}" starts-with="_s_mon_atck_s02" />
+            <file in="${from}" starts-with="frv_atk_s02" />
+          </execute>
+          <execute>
+            <file in="${to}" starts-with="_s_mon_atck_s03" />
+            <file in="${from}" starts-with="frv_atk_s03" />
+          </execute>
+          <execute>
+            <file in="${to}" starts-with="_s_mon_atck_s04" />
+            <file in="${from}" starts-with="frv_atk_s04" />
+          </execute>
+          <execute>
+            <file in="${to}" starts-with="_s_mon_dmg_s01" />
+            <file in="${from}" starts-with="frv_dmg_s01" />
+          </execute>
+          <execute>
+            <file in="${to}" starts-with="_s_mon_dmg_s02" />
+            <file in="${from}" starts-with="frv_dmg_s02" />
+          </execute>
+          <execute>
+            <file in="${to}" starts-with="_s_mon_dmg_s03" />
+            <file in="${from}" starts-with="frv_dmg_s03" />
+          </execute>
+          <execute>
+            <file in="${to}" starts-with="_s_mon_dmg_s04" />
+            <file in="${from}" starts-with="frv_dmg_s04" />
+          </execute>
+        </application>
+      </actions>
+    </task>
+  </tasks>
+</apprunner-module>

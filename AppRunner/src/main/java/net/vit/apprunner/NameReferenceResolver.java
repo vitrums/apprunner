@@ -291,7 +291,7 @@ public class NameReferenceResolver {
     Scope scopeOfConstantToResolve = maybeValue.get().scope;
     stack.get(scopeOfConstantToResolve).add(constantToResolve);
     String[] s_arr = valueOfConstantToResolve.split("\\|");
-    logger.finer(String.format("-> Resolving: %s.", Arrays.asList(s_arr)));
+    logger.finer(String.format("-> Constant ${%s}: resolving %s.", constantToResolve, Arrays.asList(s_arr)));
     String result = null;
     OPTION: for (int s_i = 0; s_i < s_arr.length; ++s_i) {
       String s = s_arr[s_i].trim();

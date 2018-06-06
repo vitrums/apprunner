@@ -6,19 +6,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.nio.file.*;
+import static java.nio.file.StandardCopyOption.*;
+import static java.nio.file.FileVisitResult.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-import java.util.logging.StreamHandler;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.jdom2.JDOMException;
@@ -26,7 +24,6 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import net.vit.apprunner.NameReferenceResolver.Scope;
 import net.vit.apprunner.Settings.*;
-import net.vit.apprunner.util.DebugLoggingFormatter;
 import net.vit.apprunner.util.Util;
 
 /**
@@ -37,6 +34,7 @@ import net.vit.apprunner.util.Util;
  * @see #launch()
  */
 public class AppRunner {
+  static final boolean isDebug = false;
   static Logger logger = null;
 
   static {
@@ -48,9 +46,7 @@ public class AppRunner {
   }
 
   private final String[] argv;
-  private FileHandler logFileHandler;
-  private StreamHandler logStdOutHandler;
-  private StreamHandler debugHandler;
+  private LoggingConfig loggingConfig;
   private CliArgs cliArgs;
   private Settings settings;
 
@@ -69,6 +65,7 @@ public class AppRunner {
    * </ul>
    */
   public void launch() {
+    boolean wasException = false;
     try {
       // Setup logger and handlers
       ensureLogging();
@@ -83,9 +80,13 @@ public class AppRunner {
       // Do work
       applyConfig();
     } catch (Exception e) {
-      System.out.println("An error has occurred. Full stack trace:");
+      wasException = true;
+      logger.info("An error has occurred. Full stack trace:");
       e.printStackTrace();
     } finally {
+      if (!wasException) {
+        logger.info("All tasks completed.");
+      }
       cleanup();
     }
   }
@@ -98,7 +99,7 @@ public class AppRunner {
    * @return false if user only wants usage information
    */
   private boolean parseCliArgs() throws ParameterException {
-    if (logStdOutHandler == null || logFileHandler == null || debugHandler == null) {
+    if (loggingConfig == null) {
       throw new IllegalStateException(
           "Logger was not found. Did you forget to call ensureLogging()?");
     }
@@ -140,7 +141,8 @@ public class AppRunner {
    * @throws IOException
    */
   private void resolveNames() throws IOException {
-    try (InputStream inStream = new FileInputStream(Util.CONFIG_DIR + cliArgs.properties)) {
+    try (InputStream inStream = new FileInputStream(
+        Util.correctFileSeparator(Util.CONFIG_DIR + File.separator + cliArgs.properties))) {
       Properties properties = new Properties();
       properties.load(inStream);
       properties.forEach((name, value) -> settings.getConfiguration()
@@ -167,6 +169,10 @@ public class AppRunner {
             .map(Task.Application.class::cast)
             .forEach((application) -> application.resolveNames(resolver, scope));
 
+        task.getActions().stream().filter(Task.Operation.class::isInstance)
+            .map(Task.Operation.class::cast)
+            .forEach((operation) -> operation.resolveNames(resolver, scope));
+
         task.getActions().stream().filter(Task.OperationRef.class::isInstance)
             .map(Task.OperationRef.class::cast).forEach((operationRef) -> {
               operationRef.resolveNames(resolver, scope);
@@ -182,10 +188,6 @@ public class AppRunner {
 
               operationDef.getOperation().resolveNames(resolver, scope);
             });
-
-        task.getActions().stream().filter(Task.Operation.class::isInstance)
-            .map(Task.Operation.class::cast)
-            .forEach((operation) -> operation.resolveNames(resolver, scope));
       });
     }
   }
@@ -202,12 +204,13 @@ public class AppRunner {
       TaskExecuteHelper() {}
 
       /**
-       * For a given {@link FileName} initiates a search inside {@link FileName#getIn()} directory.
+       * For a given {@link FileNameBase} initiates a search inside {@link FileNameBase#getIn()}
+       * directory.
        * 
-       * @param fileName file to search
-       * @return string path of the file
+       * @param fileNameBase files to search
+       * @return paths to found files
        */
-      private Path searchFile(FileName fileName) {
+      private List<Path> searchFiles(FileNameBase fileNameBase) throws NoSuchFileException {
         class MutableBoolean {
           boolean value;
 
@@ -216,18 +219,16 @@ public class AppRunner {
           }
         }
 
-        List<Path> files = null;
-        try (Stream<Path> stream = Files.walk(Paths.get(fileName.getIn()), 1)) {
-          files = stream.filter((path) -> {
-            // System.out.printf("path.getFileName().toString()=%s%n",
-            // path.getFileName().toString());
+        List<Path> paths = null;
+        try (Stream<Path> stream = Files.walk(Paths.get(fileNameBase.getIn()), 1)) {
+          paths = stream.filter((path) -> {
             MutableBoolean matches = new MutableBoolean(true);
             String fileNameStr = path.getFileName().toString().toLowerCase();
-            fileName.getStartsWith()
+            fileNameBase.getStartsWith()
                 .ifPresent((val) -> matches.value &= fileNameStr.startsWith(val.toLowerCase()));
-            fileName.getEndsWith()
+            fileNameBase.getEndsWith()
                 .ifPresent((val) -> matches.value &= fileNameStr.endsWith(val.toLowerCase()));
-            fileName.getContains()
+            fileNameBase.getContains()
                 .ifPresent((val) -> matches.value &= fileNameStr.contains(val.toLowerCase()));
             return matches.value;
           }).sorted().collect(Collectors.toList());
@@ -236,16 +237,25 @@ public class AppRunner {
           throw new RuntimeException(e);
         }
 
-        if (files == null || files.size() == 0) {
+        if (paths == null || paths.size() == 0) {
           String errorMessage = String.format(
               "Couldn't find any file in \"%s\" such that starts with \"%s\", contains \"%s\" and ends with \"%s\"",
-              fileName.getIn(), fileName.getStartsWith().orElse(""),
-              fileName.getContains().orElse(""), fileName.getEndsWith().orElse(""));
-          logger.severe(errorMessage);
-          throw new IllegalArgumentException(errorMessage);
+              fileNameBase.getIn(), fileNameBase.getStartsWith().orElse(""),
+              fileNameBase.getContains().orElse(""), fileNameBase.getEndsWith().orElse(""));
+          throw new NoSuchFileException(errorMessage);
         }
 
-        return files.get(0);
+        return paths;
+      }
+
+      /**
+       * For a given {@link FileName} initiates a search inside {@link FileName#getIn()} directory.
+       * 
+       * @param fileName file to search
+       * @return path of the file
+       */
+      private Path searchFile(FileName fileName) throws NoSuchFileException {
+        return searchFiles(fileName).get(0);
       }
 
       /**
@@ -260,7 +270,12 @@ public class AppRunner {
 
           for (Task.Application.ApplicationInput input : execute) {
             if (input instanceof FileName) {
-              command.add((searchFile((FileName) input)).toString());
+              try {
+                command.add((searchFile((FileName) input)).toString());
+              } catch (NoSuchFileException e) {
+                logger.severe(e.getMessage());
+                throw new IllegalArgumentException(e);
+              }
             } else if (input instanceof Task.Application.StringArg) {
               command.add(((Task.Application.StringArg) input).getValue());
             }
@@ -269,8 +284,7 @@ public class AppRunner {
           try {
             String processInfo = String.format("Running [%s]. Output is:",
                 command.stream().collect(Collectors.joining(" ")));
-            System.out.println(processInfo);
-            logger.finer(processInfo);
+            logger.info(processInfo);
             Process process = new ProcessBuilder(command).start();
 
             BufferedReader stdOutReader =
@@ -279,8 +293,8 @@ public class AppRunner {
             Optional<String> lineStdOut = Optional.empty(), lineStdErr = Optional.empty();
 
             do {
-              lineStdOut.ifPresent(System.out::println);
-              lineStdErr.ifPresent(System.err::println);
+              lineStdOut.ifPresent(logger::info);
+              lineStdErr.ifPresent(logger::severe);
               lineStdOut = Optional.ofNullable(stdOutReader.readLine());
               lineStdErr = Optional.ofNullable(stdErrReader.readLine());
             } while (lineStdOut.isPresent() || lineStdErr.isPresent());
@@ -301,43 +315,168 @@ public class AppRunner {
           for (Task.Operation.InternalOp internalOp : operation.getInternals()) {
             if (internalOp instanceof Task.Operation.Rename) {
               Task.Operation.Rename rename = (Task.Operation.Rename) internalOp;
-              Path filePath = searchFile(rename.getFileName());
-              for (Task.Operation.Rename.RenameOption renameOption : rename.getRenameOptions()) {
-                if (renameOption instanceof Task.Operation.Rename.ReplaceAll) {
-                  Task.Operation.Rename.ReplaceAll replaceAll =
-                      (Task.Operation.Rename.ReplaceAll) renameOption;
-                  String fileName = filePath.getFileName().toString();
-                  String newFileName =
-                      fileName.replaceAll(replaceAll.getSubstring(), replaceAll.getWith());
-                  Path newFilePath = filePath.resolveSibling(newFileName);
-                  Files.move(filePath, newFilePath, StandardCopyOption.REPLACE_EXISTING);
-                } else {
-                  // We should never be here
-                  String errorMessage =
-                      String.format("Program failure. RenameOption has an unknown final type %s.",
-                          renameOption.getClass().getName());
-                  logger.severe(errorMessage);
-                  throw new AssertionError(errorMessage);
+              List<Path> filePaths = searchFiles(rename.getFileNames());
+              for (Path filePath : filePaths) {
+                for (Task.Operation.Rename.RenameOption renameOption : rename.getRenameOptions()) {
+                  if (renameOption instanceof Task.Operation.Rename.ReplaceAll) {
+                    Task.Operation.Rename.ReplaceAll replaceAll =
+                        (Task.Operation.Rename.ReplaceAll) renameOption;
+                    String fileName = filePath.getFileName().toString();
+                    String newFileName =
+                        fileName.replaceAll(replaceAll.getSubstring(), replaceAll.getWith());
+                    Path newFilePath = filePath.resolveSibling(newFileName);
+                    logger
+                        .info(String.format("Renaming: \"%s\" -> \"%s\".", fileName, newFileName));
+                    Files.move(filePath, newFilePath, StandardCopyOption.REPLACE_EXISTING);
+                  } else {
+                    // We should never be here
+                    String errorMessage =
+                        String.format("Program failure. RenameOption has an unknown final type %s.",
+                            renameOption.getClass().getName());
+                    logger.severe(errorMessage);
+                    throw new AssertionError(errorMessage);
+                  }
                 }
               }
-            } else if (internalOp instanceof Task.Operation.Move || internalOp instanceof Task.Operation.Copy) {
-              Task.Operation.MoveOrCopy moveOrCopy = (Task.Operation.MoveOrCopy) internalOp;
-              Path toDirPath = Paths.get(moveOrCopy.getTo());
+            } else if (internalOp instanceof Task.Operation.Move
+                || internalOp instanceof Task.Operation.Copy) {
+              Task.Operation.MoveOrCopy moveOrCopyOp = (Task.Operation.MoveOrCopy) internalOp;
+              final boolean move = internalOp instanceof Task.Operation.Move;
+              Path toDirPath = Paths.get(moveOrCopyOp.getTo());
               Files.createDirectories(toDirPath);
-              for (FileName fileName : moveOrCopy.getFileNames()) {
-                Path filePath = searchFile(fileName);
-                Path newFilePath = toDirPath.resolve(filePath.getFileName());
-                if (internalOp instanceof Task.Operation.Move) {
-                  Files.move(filePath, newFilePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+              for (FileNameBase fileNameBase : moveOrCopyOp.getFileNames()) {
+                List<Path> filePaths = new ArrayList<>();
+                if (fileNameBase instanceof FileName) {
+                  filePaths.add(searchFile((FileName) fileNameBase));
                 } else {
-                  Files.copy(filePath, newFilePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                  filePaths = searchFiles((FileNames) fileNameBase);
+                }
+
+                class TreeCopier implements FileVisitor<Path> {
+                  private final Path source;
+                  private final Path target;
+
+                  TreeCopier(Path source, Path target) {
+                    this.source = source;
+                    this.target = target;
+                  }
+
+                  @Override
+                  public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
+                      throws IOException {
+                    Path newdir = target.resolve(source.relativize(dir));
+                    logger
+                        .finest(String.format("[dir]=%s [newdir]=%s", dir, newdir));
+                    try {
+                      Files.copy(dir, newdir);
+                    } catch (FileAlreadyExistsException x) {
+                      // ignore
+                    } catch (IOException x) {
+                      String errorMessage = String.format("Unable to create: %s: %s", newdir, x);
+                      logger.severe(errorMessage);
+                      throw new RuntimeException(errorMessage);
+                    }
+                    return CONTINUE;
+                  }
+
+                  @Override
+                  public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                      throws IOException {
+                    try {
+                      Path dest = target.resolve(source.relativize(file));
+                      logger.finest(String.format("[file]=%s [newfile]=%s", file, dest));
+                      if (move) {
+                        Files.move(file, dest, REPLACE_EXISTING);
+                      } else {
+                        Files.copy(file, dest, REPLACE_EXISTING);
+                      }
+                    } catch (IOException x) {
+                      String errorMessage =
+                          String.format("Unable to %s: %s: %s", move ? "move" : "copy", source, x);
+                      logger.severe(errorMessage);
+                      throw new IOException(errorMessage);
+                    }
+                    return CONTINUE;
+                  }
+
+                  @Override
+                  public FileVisitResult postVisitDirectory(Path dir, IOException exc)
+                      throws IOException {
+                    logger.finest(String.format("[dir]=%s", dir));
+                    if (move) {
+                      try {
+                        logger.finest(String.format("Deleting %s", dir));
+                        Files.delete(dir);
+                      } catch (IOException x) {
+                        String errorMessage = String.format("Failed to delete directory %s", dir);
+                        logger.severe(errorMessage);
+                        throw new IOException(errorMessage);
+                      }
+                    }
+                    return CONTINUE;
+                  }
+
+                  @Override
+                  public FileVisitResult visitFileFailed(Path file, IOException exc)
+                      throws IOException {
+                    String errorMessage = null;
+                    if (exc instanceof FileSystemLoopException) {
+                      errorMessage = String.format("Cycle detected: %s" + file);
+                    } else {
+                      errorMessage =
+                          String.format("Unable to %s: %s: %s", move ? "move" : "copy", file, exc);
+                    }
+                    logger.severe(errorMessage);
+                    throw new IOException(errorMessage);
+                  }
+
+                }
+
+                for (Path filePath : filePaths) {
+                  Path newFilePath = toDirPath.resolve(filePath.getFileName());
+                  TreeCopier treeCopier = new TreeCopier(filePath, newFilePath);
+                  logger.info(String.format("%s: \"%s\" -> \"%s\".", move ? "Moving" : "Copying",
+                      filePath, newFilePath));
+                  Files.walkFileTree(filePath, treeCopier);
                 }
               }
             } else if (internalOp instanceof Task.Operation.Delete) {
               Task.Operation.Delete delete = (Task.Operation.Delete) internalOp;
-              for (FileName fileName : delete.getFileNames()) {
-                Path filePath = searchFile(fileName);
-                Files.delete(filePath);
+              DELETE: for (FileNameBase fileNameBase : delete.getFileNames()) {
+                List<Path> filePaths = new ArrayList<>();
+                try {
+                  if (fileNameBase instanceof FileName) {
+                    filePaths.add(searchFile((FileName) fileNameBase));
+                  } else {
+                    filePaths = searchFiles((FileNames) fileNameBase);
+                  }
+                } catch (NoSuchFileException e) {
+                  logger.warning(String.format("Trying to delete non-existing file. %s",
+                      e.getMessage()));
+                  continue DELETE;
+                }
+                for (Path filePath : filePaths) {
+                  logger.info(String.format("Deleting: \"%s\".", filePath));
+                  if (Files.isDirectory(filePath)) {
+                    Files.walkFileTree(filePath, new SimpleFileVisitor<Path>() {
+                      @Override
+                      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                          throws IOException {
+                        Files.delete(file);
+                        return FileVisitResult.CONTINUE;
+                      }
+
+                      @Override
+                      public FileVisitResult postVisitDirectory(Path dir, IOException exc)
+                          throws IOException {
+                        Files.delete(dir);
+                        return FileVisitResult.CONTINUE;
+                      }
+                    });
+                  } else {
+                    Files.delete(filePath);
+                  }
+                }
               }
             } else {
               // We should never be here
@@ -357,6 +496,7 @@ public class AppRunner {
 
     // For all tasks specified in command line by user
     cliArgs.tasks.stream().map((taskName) -> settings.getTasks().get(taskName)).forEach((task) -> {
+      logger.info(String.format("--- Running task \"%s\" ---", task.getName()));
       TaskExecuteHelper helper = new TaskExecuteHelper();
       for (Task.Action action : task.getActions()) {
         if (action instanceof Task.Application) {
@@ -387,55 +527,14 @@ public class AppRunner {
    * @throws IOException
    */
   private void ensureLogging() throws IOException {
-    if (logFileHandler == null) {
-      logFileHandler = new FileHandler("apprunner_log.txt", true);
-      // String.format(format, date, source, logger, level, message, thrown);
-      logFileHandler.setFormatter(new SimpleFormatter());
-      // PUBLISH this level
-      logFileHandler.setLevel(Level.CONFIG);
-      logger.addHandler(logFileHandler);
-    }
-
-    if (logStdOutHandler == null) {
-      logStdOutHandler = new StreamHandler(System.out, new SimpleFormatter());
-      logStdOutHandler.setLevel(Level.INFO);
-      logger.addHandler(logStdOutHandler);
-    }
-
-    if (debugHandler == null) {
-      debugHandler = new ConsoleHandler() {
-        @Override
-        protected void setOutputStream(final OutputStream out) throws SecurityException {
-          super.setOutputStream(System.out);
-        }
-      };
-      debugHandler.setFormatter(new DebugLoggingFormatter());
-      debugHandler.setLevel(Level.FINER);
-      logger.addHandler(debugHandler);
-    }
+    loggingConfig = new LoggingConfig();
+    loggingConfig.ensureLogging();
   }
 
   /**
    * Closes IO.
    */
   private void cleanup() {
-    logger.finer("cleanup");
-    if (logFileHandler != null) {
-      logFileHandler.flush();
-      logFileHandler.close();
-      logFileHandler = null;
-    }
-
-    if (logStdOutHandler != null) {
-      logStdOutHandler.flush();
-      logStdOutHandler.close();
-      logStdOutHandler = null;
-    }
-
-    if (debugHandler != null) {
-      debugHandler.flush();
-      debugHandler.close();
-      debugHandler = null;
-    }
+    loggingConfig.cleanup();
   }
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apprunner-module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="apprunner-module.xsd">
+  <inherits>
+    <module name="test\module1.xml" />
+  </inherits>
+  
+  <tasks>
+    <task name="delete_123_in_new">
+      <actions>
+        <operation>
+          <delete>
+            <file in="${new_dir}" contains="123" />
+            <files in="${new_dir}" contains="123" />
+          </delete>
+        </operation>
+      </actions>
+    </task>
+  </tasks>
+</apprunner-module>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<apprunner-module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="apprunner-module.xsd">
+  <configuration>
+    <constants>
+      <constant name="testing_dir" value="dir_for_integration_testing" />
+      <constant name="original_dir" value="${testing_dir}/original" />
+      <constant name="destination_dir" value="${testing_dir}/destination" />
+      <constant name="new_dir" value="${destination_dir}/new" />
+      <!-- Executable paths -->
+      <constant name="uasset_renamer" value="${testing_dir}/apps/UassetRenamer.exe" />
+    </constants>
+    <actions>
+      <operation name="remove-new-suffix">
+        <rename>
+          <files in="." ends-with="-new.uasset" />
+          <replace-all substring="-new.uasset" with=".uasset" />
+        </rename>
+      </operation>
+    </actions>
+  </configuration>
+
+
+  <tasks>
+    <task name="run_uasset_on_two_files">
+      <constants>
+        <constant name="dir_for_test" value="${original_dir}" />
+        <constant name="to" value="${dir_for_test}/uassets" />
+        <constant name="from" value="${dir_for_test}/uassets" />
+      </constants>
+      <actions>
+        <application executable="${uasset_renamer}">
+          <execute>
+            <file in="${to}" contains="lil" />
+            <file in="${from}" contains="frv" />
+          </execute>
+        </application>
+        <operation ref="remove-new-suffix" />
+        <operation>
+          <move to="${destination_dir}">
+            <files in="." ends-with=".uasset" />
+          </move>
+        </operation>
+      </actions>
+    </task>
+
+
+    <task name="copy_123">
+      <actions>
+        <operation>
+          <copy to="${new_dir}">
+            <files in="${original_dir}/dir001" ends-with="123.txt" />
+          </copy>
+        </operation>
+      </actions>
+    </task>
+    
+    <task name="rename_123_in_new">
+      <actions>
+        <operation>
+          <rename>
+            <files in="${new_dir}" contains="123" />
+            <replace-all substring="123" with="321" />
+          </rename>
+        </operation>
+      </actions>
+    </task>
+
+
+    <task name="delete_321_in_new">
+      <actions>
+        <operation>
+          <delete>
+            <file in="${new_dir}" contains="321" />
+            <files in="${new_dir}" contains="321" />
+          </delete>
+        </operation>
+      </actions>
+    </task>
+
+
+    <task name="copy_dir001_to_x_and_y_then_abc_to_dir001_in_x_and_then_dir001_from_y_to_x">
+      <actions>
+        <operation>
+          <copy to="${destination_dir}/x">
+            <files in="${original_dir}" ends-with="dir001" />
+          </copy>
+          <copy to="${destination_dir}/y">
+            <files in="${original_dir}" ends-with="dir001" />
+          </copy>
+          <copy to="${destination_dir}/x">
+            <files in="${original_dir}" ends-with="abc.txt" />
+          </copy>
+          <copy to="${destination_dir}/x">
+            <files in="${destination_dir}/y" ends-with="dir001" />
+          </copy>
+        </operation>
+      </actions>
+    </task>
+    
+  </tasks>
+</apprunner-module>

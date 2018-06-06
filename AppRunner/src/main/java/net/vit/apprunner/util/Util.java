@@ -3,7 +3,7 @@ package net.vit.apprunner.util;
 import java.io.File;
 
 public class Util {
-  public static final String CONFIG_DIR = "config/";
+  public static final String CONFIG_DIR = "config";
   
   /** @return The current method name. */
   public static String getCurrentMethod() {
@@ -12,6 +12,7 @@ public class Util {
   }
   
   public static String correctFileSeparator(String path) {
-    return path.replace("/", File.separator).replace("\\", File.separator);
+    String result = path.replace("/", File.separator).replace("\\", File.separator);
+    return result.replace("//", File.separator).replace("\\\\", File.separator);
   }
 }

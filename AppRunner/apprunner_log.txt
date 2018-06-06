@@ -1,2 +1,133 @@
 [2018-06-03 03:17:59] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with ".uasset"
 [2018-06-03 03:20:15] SEVERE : Couldn't find any file in ".\mods_unpacked\Lili_As_MasterRaven_1p\TekkenGame\Content\Character\Item\CharacterItem\lil\LOWER" such that starts with "", contains "" and ends with ".txt"
+[2018-06-03 19:24:18] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with "-new.uasset"
+[2018-06-03 19:28:10] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with "-new.uasset"
+[2018-06-03 20:36:03] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with "-new.uasset"
+[2018-06-03 20:39:41] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with "-new.uasset"
+[2018-06-03 20:40:36] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with "-new.uasset"
+[2018-06-03 20:42:20] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with "-new.uasset"
+[2018-06-03 20:43:16] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with "-new.uasset"
+[2018-06-03 20:48:32] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with "-new.uasset"
+[2018-06-03 20:49:15] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with "-new.uasset"
+[2018-06-03 20:51:55] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with "-new.uasset"
+[2018-06-03 20:53:44] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with "-new.uasset"
+[2018-06-03 20:58:18] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with "-new.uasset"
+[2018-06-03 20:58:34] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with "-new.uasset"
+[2018-06-03 20:58:49] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with "-new.uasset"
+[2018-06-03 21:02:47] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with "-new.uasset"
+[2018-06-03 21:06:57] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with "-new.uasset"
+[2018-06-03 21:07:53] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with "_bdl.uasset"
+[2018-06-03 23:30:33] SEVERE : Task "" wasn't found in the module "test-module1.xml" or inherited modules.
+[2018-06-03 23:31:29] SEVERE : Unresolved constants [to]. You have to explicitly give the value in <your-module>.xml file or in <your-settings>.properties file.
+[2018-06-03 23:33:58] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with "-new.uasset"
+[2018-06-03 23:38:05] SEVERE : Couldn't find any file in "." such that starts with "", contains "" and ends with "-new.uasset"
+[2018-06-04 00:11:43] SEVERE : Unresolved constants [dir001]. You have to explicitly give the value in <your-module>.xml file or in <your-settings>.properties file.
+[2018-06-04 00:27:55] SEVERE : Task "delete_123_in_new" wasn't found in the module "test-module1.xml" or inherited modules.
+[2018-06-05 17:39:41] SEVERE : Unresolved constants [to]. You have to explicitly give the value in <your-module>.xml file or in <your-settings>.properties file.
+[2018-06-05 22:53:51] SEVERE : Unable to move: .\CI_lil_bdl_1p.uasset: java.nio.file.DirectoryNotEmptyException: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame\Content\Character\Item\CharacterItem\LIL\LOWER
+
+[2018-06-05 22:56:19] SEVERE : Unable to move: .\CI_lil_bdl_1p.uasset: java.nio.file.DirectoryNotEmptyException: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame\Content\Character\Item\CharacterItem\LIL\LOWER
+
+[2018-06-05 22:59:06] SEVERE : Unable to move: .\CI_lil_bdl_1p.uasset: java.nio.file.DirectoryNotEmptyException: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame\Content\Character\Item\CharacterItem\LIL\LOWER
+
+[2018-06-05 22:59:49] SEVERE : Unable to move: .\CI_lil_bdl_1p.uasset: java.nio.file.DirectoryNotEmptyException: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame\Content\Character\Item\CharacterItem\LIL\LOWER
+
+[2018-06-05 23:00:46] SEVERE : Unable to move: .\CI_lil_bdl_1p.uasset: java.nio.file.DirectoryNotEmptyException: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame\Content\Character\Item\CharacterItem\LIL\LOWER
+
+[2018-06-05 23:01:00] SEVERE : Unable to move: .\CI_lil_bdl_1p.uasset: java.nio.file.DirectoryNotEmptyException: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame\Content\Character\Item\CharacterItem\LIL\LOWER
+
+[2018-06-05 23:01:19] SEVERE : Unable to move: .\CI_lil_bdl_1p.uasset: java.nio.file.DirectoryNotEmptyException: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame\Content\Character\Item\CharacterItem\LIL\LOWER
+
+[2018-06-05 23:02:17] SEVERE : Unable to move: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame: java.nio.file.AccessDeniedException: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame -> .\TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\LIL\MI_CH_lil_skin_arm.uasset
+
+[2018-06-05 23:05:46] SEVERE : Unable to move: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame: java.nio.file.AccessDeniedException: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame -> .\TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\LIL\MI_CH_lil_skin_arm.uasset
+
+[2018-06-05 23:19:59] SEVERE : Unable to move: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame: java.nio.file.AccessDeniedException: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame -> .\TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\LIL\MI_CH_lil_skin_arm.uasset
+
+[2018-06-05 23:29:03] SEVERE : Unable to move: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame: java.nio.file.AccessDeniedException: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame -> .\TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\LIL\MI_CH_lil_skin_arm.uasset
+
+[2018-06-05 23:33:24] SEVERE : Unable to move: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame: java.nio.file.AccessDeniedException: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame -> .\TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\LIL\MI_CH_lil_skin_arm.uasset
+
+[2018-06-05 23:33:54] SEVERE : Unable to move: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame: java.nio.file.AccessDeniedException: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame -> .\TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\LIL\MI_CH_lil_skin_arm.uasset
+
+[2018-06-05 23:36:45] SEVERE : Unable to move: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame: java.nio.file.AccessDeniedException: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame -> .\TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\LIL\MI_CH_lil_skin_arm.uasset
+
+[2018-06-05 23:41:23] SEVERE : Unable to move: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame: java.nio.file.AccessDeniedException: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame -> .\TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\LIL\MI_CH_lil_skin_arm.uasset
+
+[2018-06-05 23:42:04] SEVERE : Unable to move: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame: java.nio.file.AccessDeniedException: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame -> .\TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\LIL\MI_CH_lil_skin_arm.uasset
+[2018-06-05 23:43:04] SEVERE : Unable to move: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame: java.nio.file.AccessDeniedException: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame -> .\TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\LIL\MI_CH_lil_skin_arm.uasset
+[2018-06-05 23:43:39] SEVERE : Unable to move: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame: java.nio.file.AccessDeniedException: .\mods_unpacked\Lili_As_MasterRaven_1p_Special_Forces\TekkenGame -> .\TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\LIL\MI_CH_lil_skin_arm.uasset
+[2018-06-06 01:32:32] SEVERE : Couldn't find any file in "." such that starts with "", contains "TekkenGame" and ends with ""
+[2018-06-06 01:40:13] SEVERE : Couldn't find any file in "." such that starts with "", contains "TekkenGame" and ends with ""
+[2018-06-06 01:44:28] SEVERE : Couldn't find any file in "." such that starts with "", contains "TekkenGame" and ends with ""
+[2018-06-06 02:01:02] SEVERE : Couldn't find any file in "." such that starts with "", contains "TekkenGame" and ends with ""
+[2018-06-06 02:18:14] WARNING: Trying to delete non-existing file. Couldn't find any file in "." such that starts with "", contains "TekkenGame" and ends with ""
+[2018-06-06 02:18:15] SEVERE : Unable to move: .\mods_packed\Lili_As_MasterRaven_1p_Special_Forces.pak: java.nio.file.FileSystemException: K:\SteamLibrary\steamapps\common\TEKKEN 7\TekkenGame\Content\Paks\~mods\Lili_As_MasterRaven_1p_Special_Forces.pak: Процесс не может получить доступ к файлу, так как этот файл занят другим процессом.
+
+[2018-06-06 02:41:30] WARNING: Trying to delete non-existing file. Couldn't find any file in "." such that starts with "", contains "TekkenGame" and ends with ""
+[2018-06-06 02:49:08] INFO   : --- Running task "copy_123" ---
+[2018-06-06 02:49:08] INFO   : Copying: "dir_for_integration_testing\original\dir001\a123.txt" -> "dir_for_integration_testing\destination\new\a123.txt".
+[2018-06-06 02:49:08] INFO   : Copying: "dir_for_integration_testing\original\dir001\b123.txt" -> "dir_for_integration_testing\destination\new\b123.txt".
+[2018-06-06 02:49:08] INFO   : All tasks completed.
+[2018-06-06 02:49:08] INFO   : --- Running task "delete_123_in_new" ---
+[2018-06-06 02:49:08] INFO   : Deleting: "dir_for_integration_testing\destination\new\a123.txt".
+[2018-06-06 02:49:08] INFO   : Deleting: "dir_for_integration_testing\destination\new\b123.txt".
+[2018-06-06 02:49:08] INFO   : All tasks completed.
+[2018-06-06 02:49:08] INFO   : --- Running task "copy_123" ---
+[2018-06-06 02:49:08] INFO   : Copying: "dir_for_integration_testing\original\dir001\a123.txt" -> "dir_for_integration_testing\destination\new\a123.txt".
+[2018-06-06 02:49:08] INFO   : Copying: "dir_for_integration_testing\original\dir001\b123.txt" -> "dir_for_integration_testing\destination\new\b123.txt".
+[2018-06-06 02:49:08] INFO   : All tasks completed.
+[2018-06-06 02:49:08] INFO   : --- Running task "rename_123_in_new" ---
+[2018-06-06 02:49:08] INFO   : Renaming: "a123.txt" -> "a321.txt".
+[2018-06-06 02:49:08] INFO   : Renaming: "b123.txt" -> "b321.txt".
+[2018-06-06 02:49:08] INFO   : All tasks completed.
+[2018-06-06 02:49:08] INFO   : --- Running task "delete_321_in_new" ---
+[2018-06-06 02:49:08] INFO   : Deleting: "dir_for_integration_testing\destination\new\a321.txt".
+[2018-06-06 02:49:08] INFO   : Deleting: "dir_for_integration_testing\destination\new\b321.txt".
+[2018-06-06 02:49:08] INFO   : All tasks completed.
+[2018-06-06 02:49:08] INFO   : --- Running task "copy_dir001_to_x_and_y_then_abc_to_dir001_in_x_and_then_dir001_from_y_to_x" ---
+[2018-06-06 02:49:08] INFO   : Copying: "dir_for_integration_testing\original\dir001" -> "dir_for_integration_testing\destination\x\dir001".
+[2018-06-06 02:49:08] INFO   : Copying: "dir_for_integration_testing\original\dir001" -> "dir_for_integration_testing\destination\y\dir001".
+[2018-06-06 02:49:08] INFO   : Copying: "dir_for_integration_testing\original\abc.txt" -> "dir_for_integration_testing\destination\x\abc.txt".
+[2018-06-06 02:49:08] INFO   : Copying: "dir_for_integration_testing\destination\y\dir001" -> "dir_for_integration_testing\destination\x\dir001".
+[2018-06-06 02:49:08] INFO   : All tasks completed.
+[2018-06-06 02:49:08] INFO   : --- Running task "run_uasset_on_two_files" ---
+[2018-06-06 02:49:08] INFO   : Running [dir_for_integration_testing\apps\UassetRenamer.exe dir_for_integration_testing\original\uassets\CI_lil_bdl_jeans.uasset dir_for_integration_testing\original\uassets\CI_frv_bdl_kungfu.uasset]. Output is:
+[2018-06-06 02:49:08] INFO   : Error: Found more than 2 occurances of filename.
+[2018-06-06 02:49:08] INFO   : Wrote CI_lil_bdl_jeans-new.uasset
+[2018-06-06 02:49:08] INFO   : Renaming: "CI_lil_bdl_jeans-new.uasset" -> "CI_lil_bdl_jeans.uasset".
+[2018-06-06 02:49:08] INFO   : Moving: ".\CI_lil_bdl_jeans.uasset" -> "dir_for_integration_testing\destination\CI_lil_bdl_jeans.uasset".
+[2018-06-06 02:49:08] INFO   : All tasks completed.
+[2018-06-06 03:32:30] INFO   : --- Running task "copy_123" ---
+[2018-06-06 03:32:30] INFO   : Copying: "dir_for_integration_testing\original\dir001\a123.txt" -> "dir_for_integration_testing\destination\new\a123.txt".
+[2018-06-06 03:32:30] INFO   : Copying: "dir_for_integration_testing\original\dir001\b123.txt" -> "dir_for_integration_testing\destination\new\b123.txt".
+[2018-06-06 03:32:30] INFO   : All tasks completed.
+[2018-06-06 03:32:30] INFO   : --- Running task "delete_123_in_new" ---
+[2018-06-06 03:32:30] INFO   : Deleting: "dir_for_integration_testing\destination\new\a123.txt".
+[2018-06-06 03:32:30] INFO   : Deleting: "dir_for_integration_testing\destination\new\b123.txt".
+[2018-06-06 03:32:30] INFO   : All tasks completed.
+[2018-06-06 03:32:31] INFO   : --- Running task "copy_123" ---
+[2018-06-06 03:32:31] INFO   : Copying: "dir_for_integration_testing\original\dir001\a123.txt" -> "dir_for_integration_testing\destination\new\a123.txt".
+[2018-06-06 03:32:31] INFO   : Copying: "dir_for_integration_testing\original\dir001\b123.txt" -> "dir_for_integration_testing\destination\new\b123.txt".
+[2018-06-06 03:32:31] INFO   : All tasks completed.
+[2018-06-06 03:32:31] INFO   : --- Running task "rename_123_in_new" ---
+[2018-06-06 03:32:31] INFO   : Renaming: "a123.txt" -> "a321.txt".
+[2018-06-06 03:32:31] INFO   : Renaming: "b123.txt" -> "b321.txt".
+[2018-06-06 03:32:31] INFO   : All tasks completed.
+[2018-06-06 03:32:31] INFO   : --- Running task "delete_321_in_new" ---
+[2018-06-06 03:32:31] INFO   : Deleting: "dir_for_integration_testing\destination\new\a321.txt".
+[2018-06-06 03:32:31] INFO   : Deleting: "dir_for_integration_testing\destination\new\b321.txt".
+[2018-06-06 03:32:31] INFO   : All tasks completed.
+[2018-06-06 03:32:31] INFO   : --- Running task "copy_dir001_to_x_and_y_then_abc_to_dir001_in_x_and_then_dir001_from_y_to_x" ---
+[2018-06-06 03:32:31] INFO   : Copying: "dir_for_integration_testing\original\dir001" -> "dir_for_integration_testing\destination\x\dir001".
+[2018-06-06 03:32:31] INFO   : Copying: "dir_for_integration_testing\original\dir001" -> "dir_for_integration_testing\destination\y\dir001".
+[2018-06-06 03:32:31] INFO   : Copying: "dir_for_integration_testing\original\abc.txt" -> "dir_for_integration_testing\destination\x\abc.txt".
+[2018-06-06 03:32:31] INFO   : Copying: "dir_for_integration_testing\destination\y\dir001" -> "dir_for_integration_testing\destination\x\dir001".
+[2018-06-06 03:32:31] INFO   : All tasks completed.
+[2018-06-06 03:32:31] INFO   : --- Running task "run_uasset_on_two_files" ---
+[2018-06-06 03:32:31] INFO   : Running [dir_for_integration_testing\apps\UassetRenamer.exe dir_for_integration_testing\original\uassets\CI_lil_bdl_jeans.uasset dir_for_integration_testing\original\uassets\CI_frv_bdl_kungfu.uasset]. Output is:
+[2018-06-06 03:32:31] INFO   : Error: Found more than 2 occurances of filename.
+[2018-06-06 03:32:31] INFO   : Wrote CI_lil_bdl_jeans-new.uasset
+[2018-06-06 03:32:31] INFO   : Renaming: "CI_lil_bdl_jeans-new.uasset" -> "CI_lil_bdl_jeans.uasset".
+[2018-06-06 03:32:31] INFO   : Moving: ".\CI_lil_bdl_jeans.uasset" -> "dir_for_integration_testing\destination\CI_lil_bdl_jeans.uasset".
+[2018-06-06 03:32:31] INFO   : All tasks completed.

@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -81,8 +82,12 @@ public class AppRunner {
       applyConfig();
     } catch (Exception e) {
       wasException = true;
-      logger.info("An error has occurred. Full stack trace:");
-      e.printStackTrace();
+      logger.log(Level.SEVERE, e.getMessage(), e);
+      if (e.getCause() instanceof FileNotFoundException) {
+        FileNotFoundException fnfe = (FileNotFoundException) e.getCause();
+        fnfe.getOptionsHelp().ifPresent((msg) -> logger.severe(msg));
+      }
+      // e.printStackTrace();
     } finally {
       if (!wasException) {
         logger.info("All tasks completed.");
@@ -159,7 +164,6 @@ public class AppRunner {
           String errorMessage =
               String.format("Task \"%s\" wasn't found in the module \"%s\" or inherited modules.",
                   taskName, cliArgs.module);
-          logger.severe(errorMessage);
           throw new IllegalArgumentException(errorMessage);
         }
 
@@ -185,7 +189,6 @@ public class AppRunner {
               if (operationDef == null) {
                 String errorMessage = String.format("There is no such \"%s\" operation defined.",
                     operationRef.getRef());
-                logger.severe(errorMessage);
                 throw new IllegalArgumentException(errorMessage);
               }
 
@@ -213,42 +216,50 @@ public class AppRunner {
        * @param fileNameBase files to search
        * @return paths to found files
        */
-      private List<Path> searchFiles(FileNameBase fileNameBase) throws NoSuchFileException {
-        class MutableBoolean {
-          boolean value;
+      private List<Path> searchFiles(FileNameBase fileNameBase) throws FileNotFoundException {
+        String startsWith = fileNameBase.getStartsWith().isPresent()
+            ? fileNameBase.getStartsWith().get().toLowerCase()
+            : "";
+        String endsWith =
+            fileNameBase.getEndsWith().isPresent() ? fileNameBase.getEndsWith().get().toLowerCase()
+                : "";
+        String contains =
+            fileNameBase.getContains().isPresent() ? fileNameBase.getContains().get().toLowerCase()
+                : "";
 
-          MutableBoolean(boolean value) {
-            this.value = value;
-          }
-        }
-
-        List<Path> paths = null;
         try (Stream<Path> stream = Files.walk(Paths.get(fileNameBase.getIn()), 1)) {
-          paths = stream.filter((path) -> {
-            MutableBoolean matches = new MutableBoolean(true);
-            String fileNameStr = path.getFileName().toString().toLowerCase();
-            fileNameBase.getStartsWith()
-                .ifPresent((val) -> matches.value &= fileNameStr.startsWith(val.toLowerCase()));
-            fileNameBase.getEndsWith()
-                .ifPresent((val) -> matches.value &= fileNameStr.endsWith(val.toLowerCase()));
-            fileNameBase.getContains()
-                .ifPresent((val) -> matches.value &= fileNameStr.contains(val.toLowerCase()));
-            return matches.value;
+          List<Path> result = stream.filter((path) -> {
+            String s = path.getFileName().toString().toLowerCase();
+            return s.startsWith(startsWith) && s.endsWith(endsWith) && s.contains(contains);
           }).sorted().collect(Collectors.toList());
+
+          if (!result.isEmpty())
+            return result;
         } catch (IOException e) {
-          logger.throwing(AppRunner.class.getName(), Util.getCurrentMethod(), e);
           throw new RuntimeException(e);
         }
 
-        if (paths == null || paths.size() == 0) {
-          String errorMessage = String.format(
-              "Couldn't find any file in \"%s\" such that starts with \"%s\", contains \"%s\" and ends with \"%s\"",
-              fileNameBase.getIn(), fileNameBase.getStartsWith().orElse(""),
-              fileNameBase.getContains().orElse(""), fileNameBase.getEndsWith().orElse(""));
-          throw new NoSuchFileException(errorMessage);
+        List<String> filesInDir = null;
+        try (Stream<Path> stream = Files.walk(Paths.get(fileNameBase.getIn()), 1)) {
+          filesInDir = stream.map(Path::getFileName).map(String::valueOf).map(String::toLowerCase)
+              .filter((s) -> {
+                return s.startsWith(startsWith) && s.endsWith(endsWith);
+              }).sorted().collect(Collectors.toList());
+        } catch (IOException e) {
+          throw new RuntimeException(e);
         }
 
-        return paths;
+        String errorMessage = String.format(
+            "Couldn't find any file in \"%s\" such that starts with \"%s\", contains \"%s\" and ends with \"%s\"",
+            fileNameBase.getIn(), startsWith, contains, endsWith);
+        FileNotFoundException x;
+        if (fileNameBase.getContains().isPresent() && !filesInDir.isEmpty()) {
+          x = new FileNotFoundException(errorMessage, fileNameBase.getContains().get(), filesInDir);
+        } else {
+          x = new FileNotFoundException(errorMessage);
+        }
+
+        throw x;
       }
 
       /**
@@ -257,7 +268,7 @@ public class AppRunner {
        * @param fileName file to search
        * @return path of the file
        */
-      private Path searchFile(FileName fileName) throws NoSuchFileException {
+      private Path searchFile(FileName fileName) throws FileNotFoundException {
         return searchFiles(fileName).get(0);
       }
 
@@ -275,9 +286,8 @@ public class AppRunner {
             if (input instanceof FileName) {
               try {
                 command.add((searchFile((FileName) input)).toString());
-              } catch (NoSuchFileException e) {
-                logger.severe(e.getMessage());
-                throw new IllegalArgumentException(e);
+              } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
               }
             } else if (input instanceof Task.Application.StringArg) {
               command.add(((Task.Application.StringArg) input).getValue());
@@ -302,7 +312,6 @@ public class AppRunner {
               lineStdErr = Optional.ofNullable(stdErrReader.readLine());
             } while (lineStdOut.isPresent() || lineStdErr.isPresent());
           } catch (IOException e) {
-            logger.throwing(AppRunner.class.getName(), Util.getCurrentMethod(), e);
             throw new RuntimeException(e);
           }
         }
@@ -336,7 +345,6 @@ public class AppRunner {
                     String errorMessage =
                         String.format("Program failure. RenameOption has an unknown final type %s.",
                             renameOption.getClass().getName());
-                    logger.severe(errorMessage);
                     throw new AssertionError(errorMessage);
                   }
                 }
@@ -375,7 +383,6 @@ public class AppRunner {
                       // ignore
                     } catch (IOException x) {
                       String errorMessage = String.format("Unable to create: %s: %s", newdir, x);
-                      logger.severe(errorMessage);
                       throw new RuntimeException(errorMessage);
                     }
                     return CONTINUE;
@@ -395,7 +402,6 @@ public class AppRunner {
                     } catch (IOException x) {
                       String errorMessage =
                           String.format("Unable to %s: %s: %s", move ? "move" : "copy", source, x);
-                      logger.severe(errorMessage);
                       throw new IOException(errorMessage);
                     }
                     return CONTINUE;
@@ -411,7 +417,6 @@ public class AppRunner {
                         Files.delete(dir);
                       } catch (IOException x) {
                         String errorMessage = String.format("Failed to delete directory %s", dir);
-                        logger.severe(errorMessage);
                         throw new IOException(errorMessage);
                       }
                     }
@@ -421,17 +426,11 @@ public class AppRunner {
                   @Override
                   public FileVisitResult visitFileFailed(Path file, IOException exc)
                       throws IOException {
-                    String errorMessage = null;
-                    if (exc instanceof FileSystemLoopException) {
-                      errorMessage = String.format("Cycle detected: %s" + file);
-                    } else {
-                      errorMessage =
-                          String.format("Unable to %s: %s: %s", move ? "move" : "copy", file, exc);
-                    }
-                    logger.severe(errorMessage);
+                    String errorMessage = (exc instanceof FileSystemLoopException)
+                        ? String.format("Cycle detected: %s" + file)
+                        : String.format("Unable to %s: %s: %s", move ? "move" : "copy", file, exc);
                     throw new IOException(errorMessage);
                   }
-
                 }
 
                 for (Path filePath : filePaths) {
@@ -452,7 +451,7 @@ public class AppRunner {
                   } else {
                     filePaths = searchFiles((FileNames) fileNameBase);
                   }
-                } catch (NoSuchFileException e) {
+                } catch (FileNotFoundException e) {
                   logger.warning(
                       String.format("Trying to delete non-existing file. %s", e.getMessage()));
                   continue DELETE;
@@ -485,12 +484,10 @@ public class AppRunner {
               String errorMessage =
                   String.format("Program failure. InternalOp has an unknown final type %s.",
                       internalOp.getClass().getName());
-              logger.severe(errorMessage);
               throw new AssertionError(errorMessage);
             }
           }
-        } catch (IOException e) {
-          logger.throwing(AppRunner.class.getName(), Util.getCurrentMethod(), e);
+        } catch (FileNotFoundException | IOException e) {
           throw new RuntimeException(e);
         }
       }
@@ -516,7 +513,6 @@ public class AppRunner {
           // We should never be here
           String errorMessage = String.format(
               "Program failure. Action has an unknown final type %s.", action.getClass().getName());
-          logger.severe(errorMessage);
           throw new AssertionError(errorMessage);
         }
       }

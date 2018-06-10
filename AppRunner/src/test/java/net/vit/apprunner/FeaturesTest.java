@@ -11,6 +11,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import org.junit.Before;
 import org.junit.Test;
+import net.vit.apprunner.util.LCS;
 
 public class FeaturesTest {
   private static final Path destPath = Paths.get("dir_for_integration_testing/destination");
@@ -112,5 +113,11 @@ public class FeaturesTest {
     appRunner.launch();
     assertFalse(filesExists("new/a123.txt"));
     assertFalse(filesExists("new/b123.txt"));
+  }
+  
+  @Test
+  public void testLCS() {
+    assertTrue(new LCS("GAC", "AGCAT").computeLcsLength() == 2);
+    assertTrue(new LCS("XMJYAUZ", "MZJAWXU").computeLcsLength() == 4);
   }
 }

@@ -67,7 +67,6 @@ public class XmlParser {
     if (!visitedModules.add(module)) {
       String errorMessage =
           String.format("Circular module dependency detected. Module \"%s\".", module);
-      logger.severe(errorMessage);
       throw new JDOMException(errorMessage);
     }
 
@@ -99,7 +98,6 @@ public class XmlParser {
                 if (configuration.putOperationDef(name, opDef) != null) {
                   String errorMessage =
                       String.format("More than one operation has the same name \"%s\".", name);
-                  logger.severe(errorMessage);
                   throw new JDOMException(errorMessage);
                 }
               })));
@@ -166,7 +164,6 @@ public class XmlParser {
         // We should never be here
         String errorMessage =
             String.format("Program failure. Internal operation is unknown %s.", elementName);
-        logger.severe(errorMessage);
         throw new AssertionError(errorMessage);
       }
     }
@@ -195,7 +192,6 @@ public class XmlParser {
       String errorMessage =
           "For element <file> at least one of the arguments \"startsWith\", \"endsWith\" or "
               + "\"contains\" must be specified. Argument in=" + fileNameBase.getIn();
-      logger.severe(errorMessage);
       throw new IllegalArgumentException(errorMessage);
     }
 
@@ -227,7 +223,6 @@ public class XmlParser {
             break;
           default:
             String errorMessage = "Default case was met. We should never be here.";
-            logger.severe(errorMessage);
             throw new AssertionError(errorMessage);
         }
       }
@@ -263,7 +258,6 @@ public class XmlParser {
           break;
         default:
           String errorMessage = "Default case was met. We should never be here.";
-          logger.severe(errorMessage);
           throw new AssertionError(errorMessage);
       }
     }

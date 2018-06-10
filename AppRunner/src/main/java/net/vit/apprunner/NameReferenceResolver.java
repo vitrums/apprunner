@@ -213,13 +213,11 @@ public class NameReferenceResolver {
       String errorMessage = String.format("Unresolved constants %s."
           + " You have to explicitly give the value in <your-module>.xml file"
           + " or in <your-settings>.properties file.", unresolvedConstants);;
-      logger.severe(errorMessage);
-      throw new IllegalArgumentException(errorMessage);
+      throw new UnresolvedConstantException(errorMessage);
     } else {
       // We shouldn't ever be here
       String errorMessage = String.format(
           "Program failure. Tried to resolve \"%s\" but didn't return any result.", valueToResolve);
-      logger.severe(errorMessage);
       throw new AssertionError(errorMessage);
     }
   }

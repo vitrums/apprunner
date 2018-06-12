@@ -116,12 +116,22 @@ A large amount of routine work a modder has to repeat for every new mod served t
 
 - **cleanup**: removes temporary directory *${mod_name}* in *./mods_unpacked*
 - **material_instance**: runs *uassetrenamer.exe* against *.uasset* files specified in *common.properties* located in *TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\\${character}*.
+character_item:
 - **character_item_lower**: -||- in *TekkenGame\Content\Character\Item\CharacterItem\\${character}\LOWER*
-- **character_item_upper**: -||- in *TekkenGame\Content\Character\Item\CharacterItem\\${character}\UPPER*
+- **character_item_upper**: *...\UPPER*
+- **character_item_hair**: *...\HAIR*
+- **character_item_full_body**: *...\FULL_BODY*
+customize:
 - **customize_lower**: -||- in *TekkenGame\Content\Character\Item\Customize\\${character}\LOWER*
-- **customize_upper**: -||- in *TekkenGame\Content\Character\Item\Customize\\${character}\UPPER*
+- **customize_upper**: *...\UPPER*
+- **customize_hair**: *...\HAIR*
+- **customize_full_body**: *...\FULL_BODY*
+replace_images:
 - **replace_images_cus_item_lower**: -||- in *TekkenGame\Content\UI_common\Texture2D\ReplaceImages\CUS_ITEM\\${character}*
-- **replace_images_cus_item_upper**: same
+- **replace_images_cus_item_upper**: -||-
+- **replace_images_cus_item_hair**: -||-
+- **replace_images_cus_item_full_body**: -||-
+other:
 - **pack_mod**: runs *u4pak.exe* against *TekkenGame* folder with *.uasset* files created by running previous tasks
 - **move_new_mod_to_~mods**: moves *${mod_name}.pak* to ~mods folder inside the Tekken 7 game directory
 - **delete_tmp_module_dir_with_uasset_files**: removes a temporary *TekkenGame* folder, created by running the task **pack_mod**
@@ -138,14 +148,29 @@ Constants inside *config/examples/tekken7-module.xml* to tweak:
 - **u4pak_dir**: directory with *u4pak.exe*
 - **t7_~mods_dir**: path to ~mods directory of installed Tekken 7 on your computer
 
-The batch file (*make_simple_mod.bat*) running the tool to create a most common mod, which simply replaces specific upper and lower parts of one character with specific upper and lower parts of another character, but doesn't swap material instance will consist of the following line:
+###Examples
+
+Let's create a batch file, that runs *AppRunner* with the command to create a simple mod, where one upper part and one lower part of one character gets replaced by the corresponding upper and lower parts of another character. The batch file *make_simple_mod.bat* will be as follows:
 
 ```
-apprunner.exe -m examples\t7_sound_module.xml -p examples\common.properties -t cleanup character_item_lower customize_lower replace_images_cus_item_lower character_item_upper customize_upper replace_images_cus_item_upper pack_mod move_new_mod_to_~mods delete_tmp_module_dir_with_uasset_files copy_properties_to_~mods_and_rename_to_mod_name
+apprunner.exe -m examples\t7_sound_module.xml -p examples\common.properties -t cleanup material_instance character_item_lower customize_lower replace_images_cus_item_lower character_item_upper customize_upper replace_images_cus_item_upper pack_mod move_new_mod_to_~mods delete_tmp_module_dir_with_uasset_files copy_properties_to_~mods_and_rename_to_mod_name
 ```
-where *common.properties* is a *common.properties*-like properties file, where user adjusts values of constants for each new mod before running the batch file.
+where *common.properties* is a properties file, where user adjusts values of constants for each new mod before running the batch file. AppRunner will start with an execution of *cleanup* task to delete any temporary directory named as the specified *mod_name* constant in **./mods_unpacked** (in case there was one from previous attempts of creating this mod). It will continue with executing the remaining tasks in the order they appear in command line. Lastly AppRunner will copy *common.properties* to *~mods* inside *Tekken 7* installation directory and rename it as *<mod_name>.properties*.
 
 *Note: in Unix-like OS you should write ./apprunner.exe instead of apprunner.exe*
+
+If user wanted to replace Lili's "Armored Pants" with Eliza's "1P Pants" and Lili's "T-Shirt (Flower)" with Eliza's "1P Big Top", then the *common.properties* file will have these lines:
+
+```
+mod_name = Lili_As_Eliza_1p_big_18_18
+character_to = LIL
+character_from = ELZ
+costume_lower_to = military_pts_f
+costume_lower_from = 1P_CUS
+costume_upper_to = T_GARA_A_F
+costume_upper_from = 1p_big
+```
+In case of FileNotFoundException a list of possible file matches will be prompted.
 
 ## Prerequisites
 

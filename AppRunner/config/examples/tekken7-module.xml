@@ -40,19 +40,20 @@
       <actions>
         <operation>
           <delete>
-            <file in="${mods_unpacked_dir}" contains="${mod_name}"/>
+            <file in="${mods_unpacked_dir}" contains="${mod_name}" />
           </delete>
         </operation>
       </actions>
     </task>
-  
-  
+    <!--########################### -->
+    <!--#### Material instance #### -->
+    <!--########################### -->
     <task name="material_instance">
       <constants>
         <constant name="subpath"
           value="TekkenGame\Content\Character\Common\shader\MaterialInstance\skin" />
-        <constant name="to" value="${quickbms_t7_out_dir}\${subpath}\${character_to}" />
-        <constant name="from" value="${quickbms_t7_out_dir}\${subpath}\${character_from}" />
+        <constant name="to" value="${quickbms_t7_out_dir}\${subpath}\${character_from}" />
+        <constant name="from" value="${quickbms_t7_out_dir}\${subpath}\${character_to}" />
       </constants>
       <actions>
         <application executable="${uasset_renamer}">
@@ -87,14 +88,15 @@
         </application>
         <operation ref="remove-new-suffix" />
         <operation>
-          <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}">
+          <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_from}">
             <files in="." ends-with=".uasset" />
           </move>
         </operation>
       </actions>
     </task>
-
-
+    <!--########################### -->
+    <!--###### Character Item ##### -->
+    <!--########################### -->
     <task name="character_item_lower">
       <constants>
         <constant name="subpath" value="TekkenGame\Content\Character\Item\CharacterItem" />
@@ -105,8 +107,10 @@
       <actions>
         <application executable="${uasset_renamer}">
           <execute>
-            <file in="${to}" contains="CI_${character_to}_bdl_${ci_costume_lower_to}|CI_${character_to}_bdl_${costume_lower_to}" />
-            <file in="${from}" contains="CI_${character_from}_bdl_${ci_costume_lower_from}|CI_${character_from}_bdl_${costume_lower_from}" />
+            <file in="${to}"
+              contains="CI_${character_to}_bdl_${ci_costume_lower_to}|CI_${character_to}_bdl_${costume_lower_to}" />
+            <file in="${from}"
+              contains="CI_${character_from}_bdl_${ci_costume_lower_from}|CI_${character_from}_bdl_${costume_lower_from}" />
           </execute>
         </application>
         <operation ref="remove-new-suffix" />
@@ -129,8 +133,10 @@
       <actions>
         <application executable="${uasset_renamer}">
           <execute>
-            <file in="${to}" contains="CI_${character_to}_bdu_${ci_costume_upper_to}|CI_${character_to}_bdu_${costume_upper_to}" />
-            <file in="${from}" contains="CI_${character_from}_bdu_${ci_costume_upper_from}|CI_${character_from}_bdu_${costume_upper_from}" />
+            <file in="${to}"
+              contains="CI_${character_to}_bdu_${ci_costume_upper_to}|CI_${character_to}_bdu_${costume_upper_to}" />
+            <file in="${from}"
+              contains="CI_${character_from}_bdu_${ci_costume_upper_from}|CI_${character_from}_bdu_${costume_upper_from}" />
           </execute>
         </application>
         <operation ref="remove-new-suffix" />
@@ -141,8 +147,61 @@
         </operation>
       </actions>
     </task>
+
+
+    <task name="character_item_hair">
+      <constants>
+        <constant name="subpath" value="TekkenGame\Content\Character\Item\CharacterItem" />
+        <constant name="to" value="${quickbms_t7_out_dir}\${subpath}\${character_to}\HAIR" />
+        <constant name="from"
+          value="${quickbms_t7_out_dir}\${subpath}\${character_from}\HAIR" />
+      </constants>
+      <actions>
+        <application executable="${uasset_renamer}">
+          <execute>
+            <file in="${to}"
+              contains="CI_${character_to}_har_${ci_hair_to}|CI_${character_to}_har_${hair_to}" />
+            <file in="${from}"
+              contains="CI_${character_from}_har_${ci_hair_from}|CI_${character_from}_har_${hair_from}" />
+          </execute>
+        </application>
+        <operation ref="remove-new-suffix" />
+        <operation>
+          <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}\HAIR">
+            <file in="." contains="CI_${character_to}_har" ends-with=".uasset" />
+          </move>
+        </operation>
+      </actions>
+    </task>
     
     
+    <task name="character_item_full_body">
+      <constants>
+        <constant name="subpath" value="TekkenGame\Content\Character\Item\CharacterItem" />
+        <constant name="to" value="${quickbms_t7_out_dir}\${subpath}\${character_to}\FULL_BODY" />
+        <constant name="from"
+          value="${quickbms_t7_out_dir}\${subpath}\${character_from}\FULL_BODY" />
+      </constants>
+      <actions>
+        <application executable="${uasset_renamer}">
+          <execute>
+            <file in="${to}"
+              contains="CI_${character_to}_bdf_${ci_full_body_to}|CI_${character_to}_bdf_${full_body_to}" />
+            <file in="${from}"
+              contains="CI_${character_from}_bdf_${ci_full_body_from}|CI_${character_from}_bdf_${full_body_from}" />
+          </execute>
+        </application>
+        <operation ref="remove-new-suffix" />
+        <operation>
+          <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}\FULL_BODY">
+            <file in="." contains="CI_${character_to}_bdf" ends-with=".uasset" />
+          </move>
+        </operation>
+      </actions>
+    </task>
+    <!--########################### -->
+    <!--######## CUSTOMIZE ######## -->
+    <!--########################### -->
     <task name="customize_lower">
       <constants>
         <constant name="subpath" value="TekkenGame\Content\Character\Item\Customize" />
@@ -153,8 +212,10 @@
       <actions>
         <application executable="${uasset_renamer}">
           <execute>
-            <file in="${to}" contains="CCI_${character_to}_bdl_${cci_costume_lower_to}|CCI_${character_to}_bdl_${costume_lower_to}" />
-            <file in="${from}" contains="CCI_${character_from}_bdl_${cci_costume_lower_from}|CCI_${character_from}_bdl_${costume_lower_from}" />
+            <file in="${to}"
+              contains="CCI_${character_to}_bdl_${cci_costume_lower_to}|CCI_${character_to}_bdl_${costume_lower_to}" />
+            <file in="${from}"
+              contains="CCI_${character_from}_bdl_${cci_costume_lower_from}|CCI_${character_from}_bdl_${costume_lower_from}" />
           </execute>
         </application>
         <operation ref="remove-new-suffix" />
@@ -165,8 +226,8 @@
         </operation>
       </actions>
     </task>
-    
-    
+
+
     <task name="customize_upper">
       <constants>
         <constant name="subpath" value="TekkenGame\Content\Character\Item\Customize" />
@@ -177,8 +238,10 @@
       <actions>
         <application executable="${uasset_renamer}">
           <execute>
-            <file in="${to}" contains="CCI_${character_to}_bdu_${cci_costume_upper_to}|CCI_${character_to}_bdu_${costume_upper_to}" />
-            <file in="${from}" contains="CCI_${character_from}_bdu_${cci_costume_upper_from}|CCI_${character_from}_bdu_${costume_upper_from}" />
+            <file in="${to}"
+              contains="CCI_${character_to}_bdu_${cci_costume_upper_to}|CCI_${character_to}_bdu_${costume_upper_to}" />
+            <file in="${from}"
+              contains="CCI_${character_from}_bdu_${cci_costume_upper_from}|CCI_${character_from}_bdu_${costume_upper_from}" />
           </execute>
         </application>
         <operation ref="remove-new-suffix" />
@@ -189,14 +252,67 @@
         </operation>
       </actions>
     </task>
+
+
+    <task name="customize_hair">
+      <constants>
+        <constant name="subpath" value="TekkenGame\Content\Character\Item\Customize" />
+        <constant name="to" value="${quickbms_t7_out_dir}\${subpath}\${character_to}\HAIR" />
+        <constant name="from"
+          value="${quickbms_t7_out_dir}\${subpath}\${character_from}\HAIR" />
+      </constants>
+      <actions>
+        <application executable="${uasset_renamer}">
+          <execute>
+            <file in="${to}"
+              contains="CCI_${character_to}_har_${cci_hair_to}|CCI_${character_to}_har_${hair_to}" />
+            <file in="${from}"
+              contains="CCI_${character_from}_har_${cci_hair_from}|CCI_${character_from}_har_${hair_from}" />
+          </execute>
+        </application>
+        <operation ref="remove-new-suffix" />
+        <operation>
+          <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}\HAIR">
+            <file in="." contains="CCI_${character_to}_har" ends-with=".uasset" />
+          </move>
+        </operation>
+      </actions>
+    </task>
     
     
+    <task name="customize_full_body">
+      <constants>
+        <constant name="subpath" value="TekkenGame\Content\Character\Item\Customize" />
+        <constant name="to" value="${quickbms_t7_out_dir}\${subpath}\${character_to}\FULL_BODY" />
+        <constant name="from"
+          value="${quickbms_t7_out_dir}\${subpath}\${character_from}\FULL_BODY" />
+      </constants>
+      <actions>
+        <application executable="${uasset_renamer}">
+          <execute>
+            <file in="${to}"
+              contains="CCI_${character_to}_bdf_${cci_full_body_to}|CCI_${character_to}_bdf_${full_body_to}" />
+            <file in="${from}"
+              contains="CCI_${character_from}_bdf_${cci_full_body_from}|CCI_${character_from}_bdf_${full_body_from}" />
+          </execute>
+        </application>
+        <operation ref="remove-new-suffix" />
+        <operation>
+          <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}\FULL_BODY">
+            <file in="." contains="CCI_${character_to}_bdf" ends-with=".uasset" />
+          </move>
+        </operation>
+      </actions>
+    </task>
+    <!--########################### -->
+    <!--##### Replace Images ###### -->
+    <!--########################### -->
     <task name="replace_images_cus_item_lower">
       <constants>
-        <constant name="subpath" value="TekkenGame\Content\UI_common\Texture2D\ReplaceImages\CUS_ITEM" />
+        <constant name="subpath"
+          value="TekkenGame\Content\UI_common\Texture2D\ReplaceImages\CUS_ITEM" />
         <constant name="to" value="${quickbms_t7_out_dir}\${subpath}\${character_to}" />
-        <constant name="from"
-          value="${quickbms_t7_out_dir}\${subpath}\${character_from}" />
+        <constant name="from" value="${quickbms_t7_out_dir}\${subpath}\${character_from}" />
       </constants>
       <actions>
         <application executable="${uasset_renamer}">
@@ -215,14 +331,14 @@
         </operation>
       </actions>
     </task>
-    
-    
+
+
     <task name="replace_images_cus_item_upper">
       <constants>
-        <constant name="subpath" value="TekkenGame\Content\UI_common\Texture2D\ReplaceImages\CUS_ITEM" />
+        <constant name="subpath"
+          value="TekkenGame\Content\UI_common\Texture2D\ReplaceImages\CUS_ITEM" />
         <constant name="to" value="${quickbms_t7_out_dir}\${subpath}\${character_to}" />
-        <constant name="from"
-          value="${quickbms_t7_out_dir}\${subpath}\${character_from}" />
+        <constant name="from" value="${quickbms_t7_out_dir}\${subpath}\${character_from}" />
       </constants>
       <actions>
         <application executable="${uasset_renamer}">
@@ -243,6 +359,57 @@
     </task>
 
 
+    <task name="replace_images_cus_item_hair">
+      <constants>
+        <constant name="subpath"
+          value="TekkenGame\Content\UI_common\Texture2D\ReplaceImages\CUS_ITEM" />
+        <constant name="to" value="${quickbms_t7_out_dir}\${subpath}\${character_to}" />
+        <constant name="from" value="${quickbms_t7_out_dir}\${subpath}\${character_from}" />
+      </constants>
+      <actions>
+        <application executable="${uasset_renamer}">
+          <execute>
+            <file in="${to}" starts-with="CUS_ITEM_${character_to}_har" contains="${hair_to}" />
+            <file in="${from}" starts-with="CUS_ITEM_${character_from}_har"
+              contains="${hair_from}" />
+          </execute>
+        </application>
+        <operation ref="remove-new-suffix" />
+        <operation>
+          <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}">
+            <file in="." starts-with="CUS_ITEM_${character_to}_har" ends-with=".uasset" />
+          </move>
+        </operation>
+      </actions>
+    </task>
+    
+    
+    <task name="replace_images_cus_item_full_body">
+      <constants>
+        <constant name="subpath"
+          value="TekkenGame\Content\UI_common\Texture2D\ReplaceImages\CUS_ITEM" />
+        <constant name="to" value="${quickbms_t7_out_dir}\${subpath}\${character_to}" />
+        <constant name="from" value="${quickbms_t7_out_dir}\${subpath}\${character_from}" />
+      </constants>
+      <actions>
+        <application executable="${uasset_renamer}">
+          <execute>
+            <file in="${to}" starts-with="CUS_ITEM_${character_to}_bdf" contains="${full_body_to}" />
+            <file in="${from}" starts-with="CUS_ITEM_${character_from}_bdf"
+              contains="${full_body_from}" />
+          </execute>
+        </application>
+        <operation ref="remove-new-suffix" />
+        <operation>
+          <move to="${mods_unpacked_dir}\${mod_name}\${subpath}\${character_to}">
+            <file in="." starts-with="CUS_ITEM_${character_to}_bdf" ends-with=".uasset" />
+          </move>
+        </operation>
+      </actions>
+    </task>
+    <!--########################### -->
+    <!--####### Other tasks ####### -->
+    <!--########################### -->
     <task name="pack_mod">
       <actions>
         <operation>
@@ -273,8 +440,8 @@
         </operation>
       </actions>
     </task>
-    
-    
+
+
     <task name="delete_tmp_module_dir_with_uasset_files">
       <actions>
         <operation>
@@ -285,7 +452,7 @@
         </operation>
       </actions>
     </task>
-    
+
     <task name="copy_properties_to_~mods_and_rename_to_mod_name">
       <actions>
         <operation>
@@ -294,7 +461,7 @@
           </copy>
           <rename>
             <files in="." contains="common.properties" />
-            <replace-all substring="common" with="${mod_name}"/>
+            <replace-all substring="common" with="${mod_name}" />
           </rename>
           <move to="${t7_~mods_dir}">
             <file in="." contains="${mod_name}.properties" />

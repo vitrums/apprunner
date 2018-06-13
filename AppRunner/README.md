@@ -116,22 +116,30 @@ A large amount of routine work a modder has to repeat for every new mod served t
 
 - **cleanup**: removes temporary directory *${mod_name}* in *./mods_unpacked*
 - **material_instance**: runs *uassetrenamer.exe* against *.uasset* files specified in *common.properties* located in *TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\\${character}*.
+
 character_item:
+
 - **character_item_lower**: -||- in *TekkenGame\Content\Character\Item\CharacterItem\\${character}\LOWER*
 - **character_item_upper**: *...\UPPER*
 - **character_item_hair**: *...\HAIR*
 - **character_item_full_body**: *...\FULL_BODY*
+
 customize:
+
 - **customize_lower**: -||- in *TekkenGame\Content\Character\Item\Customize\\${character}\LOWER*
 - **customize_upper**: *...\UPPER*
 - **customize_hair**: *...\HAIR*
 - **customize_full_body**: *...\FULL_BODY*
+
 replace_images:
+
 - **replace_images_cus_item_lower**: -||- in *TekkenGame\Content\UI_common\Texture2D\ReplaceImages\CUS_ITEM\\${character}*
 - **replace_images_cus_item_upper**: -||-
 - **replace_images_cus_item_hair**: -||-
 - **replace_images_cus_item_full_body**: -||-
-other:
+
+Other:
+
 - **pack_mod**: runs *u4pak.exe* against *TekkenGame* folder with *.uasset* files created by running previous tasks
 - **move_new_mod_to_~mods**: moves *${mod_name}.pak* to ~mods folder inside the Tekken 7 game directory
 - **delete_tmp_module_dir_with_uasset_files**: removes a temporary *TekkenGame* folder, created by running the task **pack_mod**

@@ -2,6 +2,7 @@
 
 This application is designed to facilitate the task of grouping and performing a set of typical operations upon files, such as move, copy, delete and rename. It can also run external processes (hence the name "AppRunner"). You can describe its functionality as a small subset of operations from shell script. The configuration is performed through editing &lt;module&gt;.xml file and &lt;launch-specific&gt;.properties file. One should run AppRunner against a module and at least one task specified (later on about tasks). The main idea is that user doesn't have to be an expert in shell script, batch or any programming language to work with this tool. Instead it has a declarative XML style, which is closer to human language. Therefore it should be relatively easy to adjust a ready-to-use solution such as the main example *config/examples/tekken7-module.xml (more about it further in this readme)* to add new features following the existing pattern, or even create the new module from scratch to serve a completely different purpose.
 
+
 ## Getting Started
 
 Use -h (--help) option to see usage.
@@ -108,6 +109,7 @@ b = meat
 ```
 then mr.Doe becomes a vegan.
 
+
 ## Tekken 7 modding example
 
 A large amount of routine work a modder has to repeat for every new mod served the main inspiration for writing this application. Hence *config/examples/tekken7-module.xml* along with *common.properties* is the main example, demonstrating the advantages of using this tool.
@@ -165,7 +167,7 @@ where *common.properties* is a properties file, where user adjusts values of con
 
 *Note: in Unix-like OS you should write ./apprunner.exe instead of apprunner.exe*
 
-If user wanted to replace Lili's "Armored Pants" with Eliza's "1P Pants" and Lili's "T-Shirt (Flower)" with Eliza's "1P Big Top", then the *common.properties* file will have these lines:
+If user wanted to replace Lili's "Armored Pants" with Eliza's "1P Pants" and Lili's "T-Shirt (Flower)" with Eliza's "1P Big Top", then the *common.properties* file would have these lines:
 
 ```
 mod_name = Lili_As_Eliza_1p_big_18_18
@@ -176,7 +178,8 @@ costume_lower_from = 1P_CUS
 costume_upper_to = T_GARA_A_F
 costume_upper_from = 1p_big
 ```
-In case of FileNotFoundException a list of possible file matches will be prompted.
+In case of *FileNotFoundException* a list of possible file matches will be prompted.
+
 
 ## Prerequisites
 
@@ -184,6 +187,7 @@ The program requires JRE (Java Runtime Environment) version 1.8 or later to run.
 
 Note: if you want to get your hands on this project as a dev, there is little if anything specific to know, since it's a Maven project. Make sure the project settings use 1.8 or later Java environment.
 * [Maven](https://maven.apache.org/) - Dependency Management
+
 
 ## Authors
 

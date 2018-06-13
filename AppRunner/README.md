@@ -118,32 +118,30 @@ A large amount of routine work a modder has to repeat for every new mod served t
 - **material_instance**: runs *uassetrenamer.exe* against *.uasset* files specified in *common.properties* located in *TekkenGame\Content\Character\Common\shader\MaterialInstance\skin\\${character}*.
 
 character_item:
-
 - **character_item_lower**: -||- in *TekkenGame\Content\Character\Item\CharacterItem\\${character}\LOWER*
 - **character_item_upper**: *...\UPPER*
 - **character_item_hair**: *...\HAIR*
 - **character_item_full_body**: *...\FULL_BODY*
 
 customize:
-
 - **customize_lower**: -||- in *TekkenGame\Content\Character\Item\Customize\\${character}\LOWER*
 - **customize_upper**: *...\UPPER*
 - **customize_hair**: *...\HAIR*
 - **customize_full_body**: *...\FULL_BODY*
 
 replace_images:
-
 - **replace_images_cus_item_lower**: -||- in *TekkenGame\Content\UI_common\Texture2D\ReplaceImages\CUS_ITEM\\${character}*
 - **replace_images_cus_item_upper**: -||-
 - **replace_images_cus_item_hair**: -||-
 - **replace_images_cus_item_full_body**: -||-
 
 Other:
-
 - **pack_mod**: runs *u4pak.exe* against *TekkenGame* folder with *.uasset* files created by running previous tasks
 - **move_new_mod_to_~mods**: moves *${mod_name}.pak* to ~mods folder inside the Tekken 7 game directory
 - **delete_tmp_module_dir_with_uasset_files**: removes a temporary *TekkenGame* folder, created by running the task **pack_mod**
 - **copy_properties_to_~mods_and_rename_to_mod_name**: copies *common.properties* file user used to create this mod to *~mods* and renames it to *${mod_name}.properties*
+
+---
 
 Note:
 - There is no such constant as ${character}. It has been written this way here only for the sake of brevity. Constants ${character_to} and ${character_from} are used instead. 
@@ -156,7 +154,7 @@ Constants inside *config/examples/tekken7-module.xml* to tweak:
 - **u4pak_dir**: directory with *u4pak.exe*
 - **t7_~mods_dir**: path to ~mods directory of installed Tekken 7 on your computer
 
-###Examples
+### Examples
 
 Let's create a batch file, that runs *AppRunner* with the command to create a simple mod, where one upper part and one lower part of one character gets replaced by the corresponding upper and lower parts of another character. The batch file *make_simple_mod.bat* will be as follows:
 
